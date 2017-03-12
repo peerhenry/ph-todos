@@ -6,6 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
   <link rel="stylesheet" href="/stylesheets/style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
@@ -13,8 +14,8 @@
   <table>
     <tr>
       <td></td>
-      <td><input type="text"></td>
-      <td><button>Add</button></td>
+      <td><input id="todo-input" type="text"></td>
+      <td><button id="add-button">Add</button></td>
     </tr>
     <tr>
       <td><input type="checkbox"></td>
@@ -22,5 +23,33 @@
       <td><button>Delete</button></td>
     </tr>
   </table>
+  <script>
+    $(document).ready(function(){
+      console.log('steady ready');
+
+      function addTodo(name){
+        axios.post('/todos/addtodo', {
+          todo: name
+        })
+        .then(function(response){
+          alert('response: ' + JSON.stringify(response.data.message));
+
+          console.log('response: '+ response);
+          console.log('stringified: '+ JSON.stringify(response));
+        })
+        .catch(function(error){
+          console.log(error);
+        });
+      }
+
+      $('#add-button').click(function(){
+        console.log('add button clicked!');
+        var newTodo = $('#todo-input').val();
+        if(!newTodo) return;
+        addTodo(newTodo);
+      });
+
+    });
+  </script>
 </body>
 </html>
