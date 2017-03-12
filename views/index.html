@@ -11,7 +11,7 @@
 </head>
 <body>
   <h1>List of todos</h1>
-  <table>
+  <table id="todos-table">
     <tr>
       <td></td>
       <td><input id="todo-input" type="text"></td>
@@ -27,13 +27,47 @@
     $(document).ready(function(){
       console.log('steady ready');
 
+      var table = $('#todos-table');
+
+      function appendTodoToTable(title, done){
+        table.append($('<tr>')
+          .append($('<td>')
+            .append( $('<input>', {type: "checkbox"}).attr('checked', done) )
+          )
+          .append($('<td>')
+            .append($('<span>').text(title))
+          )
+          .append($('<td>')
+            .append($('<button>').text('Delete'))
+          )
+        );
+      }
+
+      function loadTodos(){
+        console.log('loading todos...');
+        axios.get('/todos/')
+          .then(function(response){
+            var todos = response.data.todos;
+            
+            for(var i=0; i< todos.length; i++){
+              var nextTodo = todos[i];
+              appendTodoToTable(nextTodo.title, nextTodo.done);
+            }
+          })
+          .catch(function(error){
+            console.log(error);
+          })
+      }
+
       function addTodo(name){
         axios.post('/todos/addtodo', {
-          todo: name
+          title: name
         })
         .then(function(response){
           alert('response: ' + JSON.stringify(response.data.message));
-
+          if(response.data.success){
+            appendTodoToTable(name, false);
+          }
           console.log('response: '+ response);
           console.log('stringified: '+ JSON.stringify(response));
         })
@@ -48,6 +82,8 @@
         if(!newTodo) return;
         addTodo(newTodo);
       });
+
+      loadTodos();
 
     });
   </script>
