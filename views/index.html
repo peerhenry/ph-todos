@@ -17,28 +17,22 @@
       <td><input id="todo-input" type="text"></td>
       <td><button id="add-button">Add</button></td>
     </tr>
-    <tr>
-      <td><input type="checkbox"></td>
-      <td><span>Dummy</span></td>
-      <td><button>Delete</button></td>
-    </tr>
   </table>
   <script>
     $(document).ready(function(){
-      console.log('steady ready');
-
       var table = $('#todos-table');
 
-      function appendTodoToTable(title, done){
-        table.append($('<tr>')
+      function appendTodoToTable(todo){
+        table.append($('<tr id="row-' + todo.id + '">')
           .append($('<td>')
-            .append( $('<input>', {type: "checkbox"}).attr('checked', done) )
+            .append( $('<input>', {type: "checkbox"}).attr('checked', todo.done) )
           )
           .append($('<td>')
-            .append($('<span>').text(title))
+            .append($('<span>').text(todo.title))
           )
           .append($('<td>')
-            .append($('<button>').text('Delete'))
+            .append($('<button class="delete-button">').text('Delete'))
+            .append($('<input type="hidden">').val(todo.id))
           )
         );
       }
@@ -51,8 +45,9 @@
             
             for(var i=0; i< todos.length; i++){
               var nextTodo = todos[i];
-              appendTodoToTable(nextTodo.title, nextTodo.done);
+              appendTodoToTable(nextTodo);
             }
+            setDeleteButtonClick();
           })
           .catch(function(error){
             console.log(error);
@@ -64,27 +59,52 @@
           title: name
         })
         .then(function(response){
-          alert('response: ' + JSON.stringify(response.data.message));
+          console.log('response: ' + JSON.stringify(response.data.message));
           if(response.data.success){
-            appendTodoToTable(name, false);
+            appendTodoToTable(response.data.todo);
+            setDeleteButtonClick();
           }
-          console.log('response: '+ response);
-          console.log('stringified: '+ JSON.stringify(response));
         })
         .catch(function(error){
           console.log(error);
         });
       }
 
+      function deleteTodo(id){
+        axios.post('/todos/deletetodo', {
+          id: id
+        })
+        .then(function(response){
+          var message = response.data.message;
+          console.log(message);
+          if(response.data.success){
+            // delete from table
+            $('#row-'+id).remove();
+          }
+        })
+        .catch(function(error){
+          console.log(error)
+        });
+      }
+
+      function setDeleteButtonClick(){
+        $('.delete-button').click(function(){
+          console.log('delet button clicked!');
+          var id = $(this).siblings('input').val();
+          deleteTodo(id);
+        });
+      }
+
+      // INITIALIZATION
+
       $('#add-button').click(function(){
-        console.log('add button clicked!');
         var newTodo = $('#todo-input').val();
         if(!newTodo) return;
         addTodo(newTodo);
       });
 
       loadTodos();
-
+      
     });
   </script>
 </body>
