@@ -10,10 +10,14 @@
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="javascripts/react.js"></script>
   <script src="javascripts/react-dom.js"></script>
+  <script src="javascripts/redux.js"></script>
+  <script src="javascripts/react-redux.js"></script>
 </head>
 <body>
 
   <div id="app"></div>
+
+  <hr>
 
   <h1>List of todos</h1>
   <table id="todos-table">
@@ -23,7 +27,7 @@
       <td><button id="add-button">Add</button></td>
     </tr>
   </table>
-  
+
   <script>
     $(document).ready(function(){
       var table = $('#todos-table');
