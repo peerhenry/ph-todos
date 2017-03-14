@@ -8,8 +8,13 @@
   <link rel="stylesheet" href="/stylesheets/style.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="javascripts/react.js"></script>
+  <script src="javascripts/react-dom.js"></script>
 </head>
 <body>
+
+  <div id="app"></div>
+
   <h1>List of todos</h1>
   <table id="todos-table">
     <tr>
@@ -18,6 +23,7 @@
       <td><button id="add-button">Add</button></td>
     </tr>
   </table>
+  
   <script>
     $(document).ready(function(){
       var table = $('#todos-table');
@@ -107,5 +113,6 @@
       
     });
   </script>
+  <script src="javascripts/bundle.js"></script>
 </body>
 </html>

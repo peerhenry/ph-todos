@@ -25,6 +25,7 @@ addTodo('chillout', true);
 addTodo('brush', false);
 addTodo('mongodb', false);
 addTodo('TotalNote', false);
+addTodo('Dragon', false);
 
 /* GET all todos */
 router.get('/', function(request, response) {
