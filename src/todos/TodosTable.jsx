@@ -1,12 +1,12 @@
-import react from 'React';
+import react from 'react';
 
-const TodosTable = ({todos}) => (
+const TodosTable = ({todos, addTodo}) => (
   <table>
     <tbody>
       <tr>
         <td></td>
         <td><input type="text"/></td>
-        <td><button>Add</button></td>
+        <td><button onClick={e => addTodo()}>Add</button></td>
       </tr>
       {todos.map(todo => (
         <tr key={todo.id}>

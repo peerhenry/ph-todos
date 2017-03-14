@@ -1,5 +1,6 @@
-import { connect } from 'React-Redux';
+import { connect } from 'react-redux';
 import TodosTable from './TodosTable';
+import { getTodos, addTodo, deleteTodo } from './TodosActions';
 
 const getVisibleTodos = (todos, filter) => {
   switch (filter) {
@@ -18,6 +19,14 @@ const mapStateToProps = (state) => {
   }
 };
 
-const TodosTableContainer = connect(mapStateToProps)(TodosTable);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getTodos: getTodos(dispatch),
+    addTodo: addTodo(dispatch),
+    deleteTodo: deleteTodo(dispatch)
+  }
+}
+
+const TodosTableContainer = connect(mapStateToProps, mapDispatchToProps)(TodosTable);
 
 export default TodosTableContainer;
