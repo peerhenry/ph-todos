@@ -51,7 +51,7 @@ router.post('/addtodo/', function(request, response) {
 router.post('/deletetodo/', function(request, response) {
   var success = false;
   var message = 'Please pass a valid id!';
-  var todoId = request.body.id;
+  var todoId = request.body;
   if(todoId){
     deleteTodo(todoId);
     message = 'Todo ' + todoId + ' succesfully deleted.';

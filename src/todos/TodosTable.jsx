@@ -1,4 +1,4 @@
-import react from 'react';
+import react from 'react'
 
 const TodosTable = ({todos, addTodo}) => (
   <table>
@@ -6,7 +6,7 @@ const TodosTable = ({todos, addTodo}) => (
       <tr>
         <td></td>
         <td><input type="text"/></td>
-        <td><button onClick={e => addTodo()}>Add</button></td>
+        <td><button onClick={e => addTodo({title: 'jimmy'})}>Add</button></td>
       </tr>
       {todos.map(todo => (
         <tr key={todo.id}>

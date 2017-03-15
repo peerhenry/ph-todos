@@ -1,6 +1,7 @@
+import react from 'react';
 import { connect } from 'react-redux';
-import TodosTable from './TodosTable';
 import { getTodos, addTodo, deleteTodo } from './TodosActions';
+import TodosTable from './TodosTable';
 
 const getVisibleTodos = (todos, filter) => {
   switch (filter) {
@@ -21,9 +22,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getTodos: getTodos(dispatch),
-    addTodo: addTodo(dispatch),
-    deleteTodo: deleteTodo(dispatch)
+    getTodos: (getTodos(dispatch)),
+    addTodo: (addTodo(dispatch)),
+    deleteTodo: (deleteTodo(dispatch))
   }
 }
 

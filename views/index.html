@@ -48,7 +48,6 @@
       }
 
       function loadTodos(){
-        console.log('loading todos...');
         axios.get('/todos/')
           .then(function(response){
             var todos = response.data.todos;

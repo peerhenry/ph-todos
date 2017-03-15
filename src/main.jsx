@@ -3,29 +3,10 @@ import { render } from 'react-dom';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import TodosTableContainer from './todos/TodosTableContainer';
+import { getTodos } from './todos/TodosActions'
+import TodosReducer from './todos/TodosReducer';
 
-const initialState = {
-  todos: [
-    {
-      id: 1,
-      title: 'dummy undone',
-      done: false
-    },
-    {
-      id: 2,
-      title: 'dummy done',
-      done: true
-    }
-  ],
-  visibilityFilter: 'SHOW_ALL'
-};
-
-const reducer = function(state = initialState, action){
-  return state;
-};
-
-const app = document.getElementById('app');
-const store = createStore(reducer);
+const store = createStore(TodosReducer);
 
 const Dom = () => (
   <div>
@@ -36,4 +17,10 @@ const Dom = () => (
   </div>
 );
 
-render(<Dom/>, app);
+const app = document.getElementById('app');
+render(<div>
+    <h1>Hello says React!</h1>
+    <Provider store={store}>
+      <TodosTableContainer/>
+    </Provider>
+  </div>, app);
