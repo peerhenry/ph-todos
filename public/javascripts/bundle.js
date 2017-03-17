@@ -63,11 +63,17 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = 11);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports) {
+
+module.exports = React;
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78,9 +84,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.deleteTodo = exports.addTodo = exports.getTodos = undefined;
 
-var _AsyncStatus = __webpack_require__(6);
+var _AsyncStatus = __webpack_require__(3);
 
-var _TodosActionTypes = __webpack_require__(7);
+var _TodosActionTypes = __webpack_require__(4);
 
 var getTodos = exports.getTodos = function getTodos(dispatch) {
   return function () {
@@ -94,8 +100,8 @@ var getTodos = exports.getTodos = function getTodos(dispatch) {
   };
 };
 
-var addTodo = exports.addTodo = function addTodo(dispatch) {
-  return function (todo) {
+var addTodo = exports.addTodo = function addTodo(todo) {
+  return function (dispatch) {
     console.log('adding todo...' + JSON.stringify(todo));
     dispatch({ type: _TodosActionTypes.ADD_TODO, status: _AsyncStatus.FETCHING });
     console.log('now ajax call to addtodo...');
@@ -120,12 +126,6 @@ var deleteTodo = exports.deleteTodo = function deleteTodo(dispatch) {
 };
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports) {
-
-module.exports = React;
-
-/***/ }),
 /* 2 */
 /***/ (function(module, exports) {
 
@@ -141,16 +141,142 @@ module.exports = ReactRedux;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+var FETCHING = exports.FETCHING = 1;
+var SUCCESS = exports.SUCCESS = 2;
+var ERROR = exports.ERROR = 3;
 
-var _react = __webpack_require__(1);
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var GET_TODOS = exports.GET_TODOS = 'GET_TODOS';
+var ADD_TODO = exports.ADD_TODO = 'ADD_TODO';
+var DELETE_TODO = exports.DELETE_TODO = 'DELETE_TODO';
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _AsyncStatus = __webpack_require__(3);
+
+var _TodosActionTypes = __webpack_require__(4);
+
+var getTodos = function getTodos(state, action) {
+  switch (action.status) {
+    case _AsyncStatus.FETCHING:
+      state.fetching = true;
+      return state;
+    case _AsyncStatus.SUCCESS:
+      state.todos = action.payload;
+      return state;
+    case _AsyncStatus.ERROR:
+      console.log(action.payload);
+      return state;
+    default:
+      return state;
+  }
+};
+
+var addTodo = function addTodo(state, action) {
+  switch (action.status) {
+    case _AsyncStatus.FETCHING:
+      state.fetching = true;
+      return state;
+    case _AsyncStatus.SUCCESS:
+      console.log('will push a new todo if success');
+      if (action.payload.success) {
+        console.log('pushing a new todo : ' + JSON.stringify(action.payload.todo));
+        state.todos.push(action.payload.todo);
+      }
+      console.log('new todos in state: ' + JSON.stringify(state.todos));
+      console.log('message from server: ' + action.payload.message);
+      return state;
+    case _AsyncStatus.ERROR:
+      console.log(action.payload);
+      return state;
+    default:
+      return state;
+  }
+};
+
+var deleteTodo = function deleteTodo(state, action) {
+  switch (action.status) {
+    case _AsyncStatus.FETCHING:
+      state.fetching = true;
+      return state;
+    case _AsyncStatus.SUCCESS:
+      if (action.payload.success) {
+        state.todos = state.todos.filter(todo.id != action.payload);
+      }
+      console.log(action.payload.message);
+      return state;
+    case _AsyncStatus.ERROR:
+      console.log(action.payload);
+      return state;
+    default:
+      return state;
+  }
+};
+
+var initialState = {
+  todos: [{ id: -1, title: "reactdummyentry", done: false }],
+  fetching: false,
+  visibilityFilter: 'SHOW_ALL'
+};
+
+var TodosReducer = function TodosReducer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+  var action = arguments[1];
+
+  console.log('TodosReducer reached in state: ' + JSON.stringify(state));
+  console.log('With action: ' + JSON.stringify(action));
+  switch (action.type) {
+    case _TodosActionTypes.GET_TODOS:
+      return getTodos(state, action);
+    case _TodosActionTypes.ADD_TODO:
+      return addTodo(state, action);
+    case _TodosActionTypes.DELETE_TODO:
+      return deleteTodo(state, action);
+    default:
+      return state;
+  }
+};
+
+exports.default = TodosReducer;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(2);
 
-var _TodosActions = __webpack_require__(0);
+var _TodosActions = __webpack_require__(1);
 
-var _TodosTable = __webpack_require__(8);
+var _TodosTable = __webpack_require__(10);
 
 var _TodosTable2 = _interopRequireDefault(_TodosTable);
 
@@ -172,6 +298,7 @@ var getVisibleTodos = function getVisibleTodos(todos, filter) {
 };
 
 var mapStateToProps = function mapStateToProps(state) {
+  console.log('the todos prop will be: ' + JSON.stringify(state.todos));
   return {
     todos: getVisibleTodos(state.todos, state.visibilityFilter)
   };
@@ -180,7 +307,9 @@ var mapStateToProps = function mapStateToProps(state) {
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
     getTodos: (0, _TodosActions.getTodos)(dispatch),
-    addTodo: (0, _TodosActions.addTodo)(dispatch),
+    addTodo: function addTodo(todo) {
+      return (0, _TodosActions.addTodo)(todo)(dispatch);
+    },
     deleteTodo: (0, _TodosActions.deleteTodo)(dispatch)
   };
 };
@@ -190,47 +319,25 @@ var TodosTableContainer = (0, _reactRedux.connect)(mapStateToProps, mapDispatchT
 exports.default = TodosTableContainer;
 
 /***/ }),
-/* 4 */
+/* 7 */
 /***/ (function(module, exports) {
 
 module.exports = ReactDOM;
 
 /***/ }),
-/* 5 */
+/* 8 */
 /***/ (function(module, exports) {
 
 module.exports = Redux;
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 9 */
+/***/ (function(module, exports) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var FETCHING = exports.FETCHING = 1;
-var SUCCESS = exports.SUCCESS = 2;
-var ERROR = exports.ERROR = 3;
+module.exports = ReduxThunk;
 
 /***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var GET_TODOS = exports.GET_TODOS = 'GET_TODOS';
-var ADD_TODO = exports.ADD_TODO = 'ADD_TODO';
-var DELETE_TODO = exports.DELETE_TODO = 'DELETE_TODO';
-
-/***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -240,7 +347,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _react = __webpack_require__(1);
+var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -248,63 +355,75 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var TodosTable = function TodosTable(_ref) {
   var todos = _ref.todos,
+      getTodos = _ref.getTodos,
       addTodo = _ref.addTodo;
   return React.createElement(
-    'table',
+    'div',
     null,
     React.createElement(
-      'tbody',
+      'table',
       null,
       React.createElement(
-        'tr',
+        'tbody',
         null,
-        React.createElement('td', null),
         React.createElement(
-          'td',
-          null,
-          React.createElement('input', { type: 'text' })
-        ),
-        React.createElement(
-          'td',
-          null,
-          React.createElement(
-            'button',
-            { onClick: function onClick(e) {
-                return addTodo({ title: 'jimmy' });
-              } },
-            'Add'
-          )
-        )
-      ),
-      todos.map(function (todo) {
-        return React.createElement(
           'tr',
-          { key: todo.id },
+          null,
+          React.createElement('td', null),
           React.createElement(
             'td',
             null,
-            React.createElement('input', { type: 'checkbox', defaultChecked: todo.done })
-          ),
-          React.createElement(
-            'td',
-            null,
-            React.createElement(
-              'span',
-              null,
-              todo.title
-            )
+            React.createElement('input', { type: 'text' })
           ),
           React.createElement(
             'td',
             null,
             React.createElement(
               'button',
-              null,
-              'Delete'
+              { onClick: function onClick(e) {
+                  return addTodo({ title: 'jimmy' });
+                } },
+              'Add'
             )
           )
-        );
-      })
+        ),
+        todos.map(function (todo) {
+          return React.createElement(
+            'tr',
+            { key: todo.id },
+            React.createElement(
+              'td',
+              null,
+              React.createElement('input', { type: 'checkbox', defaultChecked: todo.done })
+            ),
+            React.createElement(
+              'td',
+              null,
+              React.createElement(
+                'span',
+                null,
+                todo.title
+              )
+            ),
+            React.createElement(
+              'td',
+              null,
+              React.createElement(
+                'button',
+                null,
+                'Delete'
+              )
+            )
+          );
+        })
+      )
+    ),
+    React.createElement(
+      'button',
+      { onClick: function onClick(e) {
+          return getTodos();
+        } },
+      'fetch todos'
     )
   );
 };
@@ -312,35 +431,39 @@ var TodosTable = function TodosTable(_ref) {
 exports.default = TodosTable;
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _react = __webpack_require__(1);
+var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(4);
+var _reactDom = __webpack_require__(7);
 
-var _redux = __webpack_require__(5);
+var _redux = __webpack_require__(8);
+
+var _reduxThunk = __webpack_require__(9);
+
+var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
 var _reactRedux = __webpack_require__(2);
 
-var _TodosTableContainer = __webpack_require__(3);
+var _TodosTableContainer = __webpack_require__(6);
 
 var _TodosTableContainer2 = _interopRequireDefault(_TodosTableContainer);
 
-var _TodosActions = __webpack_require__(0);
+var _TodosActions = __webpack_require__(1);
 
-var _TodosReducer = __webpack_require__(10);
+var _TodosReducer = __webpack_require__(5);
 
 var _TodosReducer2 = _interopRequireDefault(_TodosReducer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var store = (0, _redux.createStore)(_TodosReducer2.default);
+var store = (0, _redux.createStore)(_TodosReducer2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default));
 
 var Dom = function Dom() {
   return _react2.default.createElement(
@@ -374,101 +497,6 @@ var app = document.getElementById('app');
     _react2.default.createElement(_TodosTableContainer2.default, null)
   )
 ), app);
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _AsyncStatus = __webpack_require__(6);
-
-var _TodosActionTypes = __webpack_require__(7);
-
-var getTodos = function getTodos(state, action) {
-  switch (action.status) {
-    case _AsyncStatus.FETCHING:
-      state.fetching = true;
-      return state;
-    case _AsyncStatus.SUCCESS:
-      state.todos = action.payload;
-      return state;
-    case _AsyncStatus.ERROR:
-      console.log(action.payload);
-      return state;
-    default:
-      return state;
-  }
-};
-
-var addTodo = function addTodo(state, action) {
-  switch (action.status) {
-    case _AsyncStatus.FETCHING:
-      state.fetching = true;
-      return state;
-    case _AsyncStatus.SUCCESS:
-      if (action.payload.success) {
-        state.todos.push(action.payload.todo);
-      }
-      console.log(action.payload.message);
-      return state;
-    case _AsyncStatus.ERROR:
-      console.log(action.payload);
-      return state;
-    default:
-      return state;
-  }
-};
-
-var deleteTodo = function deleteTodo(state, action) {
-  switch (action.status) {
-    case _AsyncStatus.FETCHING:
-      state.fetching = true;
-      return state;
-    case _AsyncStatus.SUCCESS:
-      if (action.payload.success) {
-        state.todos = state.todos.filter(todo.id != action.payload);
-      }
-      console.log(action.payload.message);
-      return state;
-    case _AsyncStatus.ERROR:
-      console.log(action.payload);
-      return state;
-    default:
-      return state;
-  }
-};
-
-var initialState = {
-  todos: [],
-  fetching: false,
-  visibilityFilter: 'SHOW_ALL'
-};
-
-var TodosReducer = function TodosReducer() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
-  var action = arguments[1];
-
-  console.log('TodosReducer reached in state: ' + JSON.stringify(state));
-  console.log('With action: ' + JSON.stringify(action));
-  switch (action.type) {
-    case _TodosActionTypes.GET_TODOS:
-      return getTodos(state, action);
-    case _TodosActionTypes.ADD_TODO:
-      return addTodo(state, action);
-    case _TodosActionTypes.DELETE_TODO:
-      return deleteTodo(state, action);
-    default:
-      return state;
-  }
-};
-
-exports.default = TodosReducer;
 
 /***/ })
 /******/ ]);

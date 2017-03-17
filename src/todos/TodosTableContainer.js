@@ -15,6 +15,7 @@ const getVisibleTodos = (todos, filter) => {
 };
 
 const mapStateToProps = (state) => {
+  console.log('the todos prop will be: ' + JSON.stringify(state.todos));
   return {
     todos: getVisibleTodos(state.todos, state.visibilityFilter)
   }
@@ -23,7 +24,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getTodos: (getTodos(dispatch)),
-    addTodo: (addTodo(dispatch)),
+    addTodo: todo => (addTodo(todo)(dispatch)),
     deleteTodo: (deleteTodo(dispatch))
   }
 }

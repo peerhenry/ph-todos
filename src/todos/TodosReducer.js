@@ -23,10 +23,13 @@ const addTodo = function(state, action){
       state.fetching = true;
       return state;
     case SUCCESS:
+      console.log('will push a new todo if success');
       if(action.payload.success){
+        console.log('pushing a new todo : ' + JSON.stringify(action.payload.todo));
         state.todos.push(action.payload.todo);
       }
-      console.log(action.payload.message);
+      console.log('new todos in state: ' + JSON.stringify(state.todos));
+      console.log('message from server: ' + action.payload.message);
       return state;
     case ERROR:
       console.log(action.payload);
@@ -56,7 +59,7 @@ const deleteTodo = function(state, action){
 }
 
 let initialState = {
-  todos: [],
+  todos: [{id: -1, title: "reactdummyentry", done: false}],
   fetching: false,
   visibilityFilter: 'SHOW_ALL'
 };
