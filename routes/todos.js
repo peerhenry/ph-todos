@@ -1,64 +1,37 @@
 var express = require('express');
 var router = express.Router();
+var debug = require('debug')('ph-todos:todos');
 
-var counter = 1;
-var todos = [];
+var TodosData = require('../data_access/TodosData');
+var TodosLogic = require('../logic/TodosLogic');
 
-function addTodo(title, done){
-  var newTodo = {
-    id: counter++,
-    title: title,
-    done: done
-  };
-  todos.push(newTodo);
-  return newTodo;
-}
+let todosData = new TodosData();
+let todosLogic = new TodosLogic(todosData);
 
-function deleteTodo(todoId){
-  todos = todos.filter(function(todo){
-    return todo.id != todoId;
-  });
-}
-
-/* initialize todos */
-addTodo('chillout', true);
-addTodo('brush', false);
-addTodo('mongodb', false);
-addTodo('TotalNote', false);
-addTodo('Dragon', false);
-
-/* GET all todos */
+// GET all todos
 router.get('/', function(request, response) {
-  response.send({ todos: todos });
+  debug('get todos');
+  response.send({ todos: todosLogic.getTodos() });
 });
 
-/* POST new todo */
+// POST new todo
 router.post('/addtodo/', function(request, response) {
-  var success = false;
-  var message = 'Add todo failed!';
+  debug('add todo');
   var title = request.body.title;
-  var newTodo;
-  if(title){
-    newTodo = addTodo(title, false);
-    message = 'Todo ' + title + ' succesfully added.';
-    success = true;
-  }
+  var newTodo = todosLogic.addTodo(title, false);
+  var message = 'Todo ' + title + ' succesfully added.';
   response.contentType('json');
-  response.send({ success: success, message: message, todo: newTodo });
+  response.send({ message: message, todo: newTodo });
 });
 
-/* POST delete todo */
+// POST delete todo
 router.post('/deletetodo/', function(request, response) {
-  var success = false;
-  var message = 'Please pass a valid id!';
-  var todoId = request.body;
-  if(todoId){
-    deleteTodo(todoId);
-    message = 'Todo ' + todoId + ' succesfully deleted.';
-    success = true;
-  }
+  debug('delete todo');
+  var todoId = request.body.id;
+  todosLogic.deleteTodo(todoId);
+  var message = 'Todo ' + todoId + ' succesfully deleted.';
   response.contentType('json');
-  response.send({ success: success, message: message });
+  response.send({ message: message });
 });
 
 module.exports = router;

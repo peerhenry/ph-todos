@@ -4,14 +4,13 @@ import { GET_TODOS, ADD_TODO, DELETE_TODO } from './TodosActionTypes';
 const getTodos = function(state, action){
   switch(action.status){
     case FETCHING:
-      state.fetching = true;
-      return state;
+      return {...state, fetching: true};
     case SUCCESS:
-      state.todos = action.payload;
-      return state;
+      console.log(JSON.stringify(action.payload));
+      return {...state, fetching: false, todos: action.payload};
     case ERROR:
-      console.log(action.payload);
-      return state;
+      console.log('error: ' + action.payload);
+      return {...state, fetching: false};
     default:
       return state;
   }
@@ -20,20 +19,13 @@ const getTodos = function(state, action){
 const addTodo = function(state, action){
   switch(action.status){
     case FETCHING:
-      state.fetching = true;
-      return state;
+      return {...state, fetching: true};
     case SUCCESS:
-      console.log('will push a new todo if success');
-      if(action.payload.success){
-        console.log('pushing a new todo : ' + JSON.stringify(action.payload.todo));
-        state.todos.push(action.payload.todo);
-      }
-      console.log('new todos in state: ' + JSON.stringify(state.todos));
       console.log('message from server: ' + action.payload.message);
-      return state;
+      return {...state, todos: [...state.todos, action.payload.todo]};
     case ERROR:
-      console.log(action.payload);
-      return state;
+      console.log('error: ' + action.payload);
+      return {...state, fetching: false};
     default:
       return state;
   }
@@ -42,31 +34,23 @@ const addTodo = function(state, action){
 const deleteTodo = function(state, action){
   switch(action.status){
     case FETCHING:
-      state.fetching = true;
-      return state;
+      return {...state, fetching: true};
     case SUCCESS:
-      if(action.payload.success){
-        state.todos = state.todos.filter(todo.id != action.payload);
-      }
-      console.log(action.payload.message);
-      return state;
+      console.log('delete todo success payload: ' + action.payload);
+      return {...state, fetching: false, todos: state.todos.filter(todo => todo.id != action.payload)};
     case ERROR:
-      console.log(action.payload);
-      return state;
+      console.log('error: ' + action.payload);
+      return {...state, fetching: false};
     default:
       return state;
   }
 }
 
-let initialState = {
-  todos: [{id: -1, title: "reactdummyentry", done: false}],
-  fetching: false,
-  visibilityFilter: 'SHOW_ALL'
-};
-
-const TodosReducer = function(state = initialState, action){
-  console.log('TodosReducer reached in state: ' + JSON.stringify(state));
-  console.log('With action: ' + JSON.stringify(action));
+const TodosReducer = function(state, action){
+  console.log('');
+  console.log('*** REDUCE state: ' + JSON.stringify(state));
+  console.log('*** REDUCE action: ' + JSON.stringify(action));
+  console.log('');
   switch(action.type){
     case GET_TODOS:
       return getTodos(state, action);
@@ -75,6 +59,7 @@ const TodosReducer = function(state = initialState, action){
     case DELETE_TODO:
       return deleteTodo(state, action);
     default:
+      console.log('reducer will now return default.');
       return state;
   }
 }

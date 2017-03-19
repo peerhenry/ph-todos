@@ -8,7 +8,13 @@ import TodosTableContainer from './todos/TodosTableContainer';
 import { getTodos } from './todos/TodosActions'
 import TodosReducer from './todos/TodosReducer';
 
-const store = createStore(TodosReducer, applyMiddleware(thunk));
+let initialState = {
+  todos: [{id: -1, title: "reactdummyentry", done: false}],
+  fetching: false,
+  visibilityFilter: 'SHOW_ALL'
+};
+
+const store = createStore(TodosReducer, initialState, applyMiddleware(thunk));
 
 const Dom = () => (
   <div>

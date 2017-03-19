@@ -1,3 +1,3 @@
-export const FETCHING = 1;
-export const SUCCESS = 2;
-export const ERROR = 3;
+export const FETCHING = 'FETCHING';
+export const SUCCESS = 'SUCCESS';
+export const ERROR = 'ERROR';

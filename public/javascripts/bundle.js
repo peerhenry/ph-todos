@@ -88,9 +88,9 @@ var _AsyncStatus = __webpack_require__(3);
 
 var _TodosActionTypes = __webpack_require__(4);
 
-var getTodos = exports.getTodos = function getTodos(dispatch) {
-  return function () {
-    console.log('fetching todos...');
+var getTodos = exports.getTodos = function getTodos() {
+  return function (dispatch, getState) {
+    console.log('dispatching getTodos...');
     dispatch({ type: _TodosActionTypes.GET_TODOS, status: _AsyncStatus.FETCHING });
     axios.get('/todos/').then(function (response) {
       return dispatch({ type: _TodosActionTypes.GET_TODOS, status: _AsyncStatus.SUCCESS, payload: response.data });
@@ -101,8 +101,8 @@ var getTodos = exports.getTodos = function getTodos(dispatch) {
 };
 
 var addTodo = exports.addTodo = function addTodo(todo) {
-  return function (dispatch) {
-    console.log('adding todo...' + JSON.stringify(todo));
+  return function (dispatch, getState) {
+    console.log('dispatching addTodo... ' + JSON.stringify(todo));
     dispatch({ type: _TodosActionTypes.ADD_TODO, status: _AsyncStatus.FETCHING });
     console.log('now ajax call to addtodo...');
     axios.post('/todos/addtodo', todo).then(function (response) {
@@ -113,12 +113,13 @@ var addTodo = exports.addTodo = function addTodo(todo) {
   };
 };
 
-var deleteTodo = exports.deleteTodo = function deleteTodo(dispatch) {
-  return function (id) {
-    console.log('deleting todo...');
+var deleteTodo = exports.deleteTodo = function deleteTodo(id) {
+  return function (dispatch, getState) {
+    console.log('dispatching deleteTodo... ' + id);
     dispatch({ type: _TodosActionTypes.DELETE_TODO, status: _AsyncStatus.FETCHING });
-    axios.post('/todos/deletetodo', id).then(function (response) {
-      return dispatch({ type: _TodosActionTypes.DELETE_TODO, status: _AsyncStatus.SUCCESS, payload: response.data });
+    console.log('now ajax call to deletetodo...');
+    axios.post('/todos/deletetodo', { id: id }).then(function (response) {
+      return dispatch({ type: _TodosActionTypes.DELETE_TODO, status: _AsyncStatus.SUCCESS, payload: id });
     }).catch(function (err) {
       return dispatch({ type: _TodosActionTypes.DELETE_TODO, status: _AsyncStatus.ERROR, payload: err });
     });
@@ -141,9 +142,9 @@ module.exports = ReactRedux;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var FETCHING = exports.FETCHING = 1;
-var SUCCESS = exports.SUCCESS = 2;
-var ERROR = exports.ERROR = 3;
+var FETCHING = exports.FETCHING = 'FETCHING';
+var SUCCESS = exports.SUCCESS = 'SUCCESS';
+var ERROR = exports.ERROR = 'ERROR';
 
 /***/ }),
 /* 4 */
@@ -170,21 +171,24 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _AsyncStatus = __webpack_require__(3);
 
 var _TodosActionTypes = __webpack_require__(4);
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 var getTodos = function getTodos(state, action) {
   switch (action.status) {
     case _AsyncStatus.FETCHING:
-      state.fetching = true;
-      return state;
+      return _extends({}, state, { fetching: true });
     case _AsyncStatus.SUCCESS:
-      state.todos = action.payload;
-      return state;
+      console.log(JSON.stringify(action.payload));
+      return _extends({}, state, { fetching: false, todos: action.payload });
     case _AsyncStatus.ERROR:
-      console.log(action.payload);
-      return state;
+      console.log('error: ' + action.payload);
+      return _extends({}, state, { fetching: false });
     default:
       return state;
   }
@@ -193,20 +197,13 @@ var getTodos = function getTodos(state, action) {
 var addTodo = function addTodo(state, action) {
   switch (action.status) {
     case _AsyncStatus.FETCHING:
-      state.fetching = true;
-      return state;
+      return _extends({}, state, { fetching: true });
     case _AsyncStatus.SUCCESS:
-      console.log('will push a new todo if success');
-      if (action.payload.success) {
-        console.log('pushing a new todo : ' + JSON.stringify(action.payload.todo));
-        state.todos.push(action.payload.todo);
-      }
-      console.log('new todos in state: ' + JSON.stringify(state.todos));
       console.log('message from server: ' + action.payload.message);
-      return state;
+      return _extends({}, state, { todos: [].concat(_toConsumableArray(state.todos), [action.payload.todo]) });
     case _AsyncStatus.ERROR:
-      console.log(action.payload);
-      return state;
+      console.log('error: ' + action.payload);
+      return _extends({}, state, { fetching: false });
     default:
       return state;
   }
@@ -215,34 +212,25 @@ var addTodo = function addTodo(state, action) {
 var deleteTodo = function deleteTodo(state, action) {
   switch (action.status) {
     case _AsyncStatus.FETCHING:
-      state.fetching = true;
-      return state;
+      return _extends({}, state, { fetching: true });
     case _AsyncStatus.SUCCESS:
-      if (action.payload.success) {
-        state.todos = state.todos.filter(todo.id != action.payload);
-      }
-      console.log(action.payload.message);
-      return state;
+      console.log('delete todo success payload: ' + action.payload);
+      return _extends({}, state, { fetching: false, todos: state.todos.filter(function (todo) {
+          return todo.id != action.payload;
+        }) });
     case _AsyncStatus.ERROR:
-      console.log(action.payload);
-      return state;
+      console.log('error: ' + action.payload);
+      return _extends({}, state, { fetching: false });
     default:
       return state;
   }
 };
 
-var initialState = {
-  todos: [{ id: -1, title: "reactdummyentry", done: false }],
-  fetching: false,
-  visibilityFilter: 'SHOW_ALL'
-};
-
-var TodosReducer = function TodosReducer() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
-  var action = arguments[1];
-
-  console.log('TodosReducer reached in state: ' + JSON.stringify(state));
-  console.log('With action: ' + JSON.stringify(action));
+var TodosReducer = function TodosReducer(state, action) {
+  console.log('');
+  console.log('*** REDUCE state: ' + JSON.stringify(state));
+  console.log('*** REDUCE action: ' + JSON.stringify(action));
+  console.log('');
   switch (action.type) {
     case _TodosActionTypes.GET_TODOS:
       return getTodos(state, action);
@@ -251,6 +239,7 @@ var TodosReducer = function TodosReducer() {
     case _TodosActionTypes.DELETE_TODO:
       return deleteTodo(state, action);
     default:
+      console.log('reducer will now return default.');
       return state;
   }
 };
@@ -306,11 +295,15 @@ var mapStateToProps = function mapStateToProps(state) {
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
-    getTodos: (0, _TodosActions.getTodos)(dispatch),
-    addTodo: function addTodo(todo) {
-      return (0, _TodosActions.addTodo)(todo)(dispatch);
+    getTodos: function getTodos() {
+      dispatch(_TodosActions.getTodos);
     },
-    deleteTodo: (0, _TodosActions.deleteTodo)(dispatch)
+    addTodo: function addTodo(todo) {
+      dispatch((0, _TodosActions.addTodo)(todo));
+    },
+    deleteTodo: function deleteTodo(id) {
+      dispatch((0, _TodosActions.deleteTodo)(id));
+    }
   };
 };
 
@@ -356,7 +349,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var TodosTable = function TodosTable(_ref) {
   var todos = _ref.todos,
       getTodos = _ref.getTodos,
-      addTodo = _ref.addTodo;
+      addTodo = _ref.addTodo,
+      deleteTodo = _ref.deleteTodo;
   return React.createElement(
     'div',
     null,
@@ -388,6 +382,7 @@ var TodosTable = function TodosTable(_ref) {
           )
         ),
         todos.map(function (todo) {
+          //console.log('mapping todo: ' + todo.id); // DEBUG
           return React.createElement(
             'tr',
             { key: todo.id },
@@ -410,7 +405,9 @@ var TodosTable = function TodosTable(_ref) {
               null,
               React.createElement(
                 'button',
-                null,
+                { onClick: function onClick(e) {
+                    return deleteTodo(todo.id);
+                  } },
                 'Delete'
               )
             )
@@ -463,7 +460,13 @@ var _TodosReducer2 = _interopRequireDefault(_TodosReducer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var store = (0, _redux.createStore)(_TodosReducer2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default));
+var initialState = {
+  todos: [{ id: -1, title: "reactdummyentry", done: false }],
+  fetching: false,
+  visibilityFilter: 'SHOW_ALL'
+};
+
+var store = (0, _redux.createStore)(_TodosReducer2.default, initialState, (0, _redux.applyMiddleware)(_reduxThunk2.default));
 
 var Dom = function Dom() {
   return _react2.default.createElement(
