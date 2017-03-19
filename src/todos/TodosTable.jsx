@@ -6,7 +6,7 @@ const TodosTable = ({todos, getTodos, addTodo, deleteTodo}) => (
       <tbody>
         <tr>
           <td></td>
-          <td><input type="text"/></td>
+          <td><input id="todo-title" type="text"/></td>
           <td><button onClick={e => addTodo({title: 'jimmy'})}>Add</button></td>
         </tr>
         {todos.map(todo => {
@@ -23,7 +23,6 @@ const TodosTable = ({todos, getTodos, addTodo, deleteTodo}) => (
       </tbody>
       
     </table>
-    <button onClick={e => getTodos()}>fetch todos</button>
   </div>
 );
 

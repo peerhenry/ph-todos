@@ -6,8 +6,7 @@ const getTodos = function(state, action){
     case FETCHING:
       return {...state, fetching: true};
     case SUCCESS:
-      console.log(JSON.stringify(action.payload));
-      return {...state, fetching: false, todos: action.payload};
+      return {...state, fetching: false, todos: action.payload.todos};
     case ERROR:
       console.log('error: ' + action.payload);
       return {...state, fetching: false};

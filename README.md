@@ -1,8 +1,17 @@
 # ph-todos
 dummy nodejs app to learn connecting to a mongodb, as well as ajax with react & redux.
 
+## requirements
+Make sure you have globally installed webpack and nodemon. You can view the packages you have installed globally with the command:
+
+`npm list -g --depth 0`
+
+If webpack or nodemon are not on the list you can install them with the command:
+
+`npm i -g webpack nodemon`
+
 ## setup
-After cloning the project, execute following commands:
+After downloading the source code, execute following commands:
 `npm install` - Installs all required node packages.
 `webpack` - Compiles the react code.
 `start.bat` - Enables debug logging and starts the server with nodemon.

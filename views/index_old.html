@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>PH Todos</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+</head>
+<body>
+  <h1>List of todos</h1>
+  <table id="todos-table">
+    <tr>
+      <td></td>
+      <td><input id="todo-input" type="text"></td>
+      <td><button id="add-button">Add</button></td>
+    </tr>
+  </table>
+
+  <script>
+    $(document).ready(function(){
+      var table = $('#todos-table');
+
+      function appendTodoToTable(todo){
+        table.append($('<tr id="row-' + todo.id + '">')
+          .append($('<td>')
+            .append( $('<input>', {type: "checkbox"}).attr('checked', todo.done) )
+          )
+          .append($('<td>')
+            .append($('<span>').text(todo.title))
+          )
+          .append($('<td>')
+            .append($('<button class="delete-button">').text('Delete'))
+            .append($('<input type="hidden">').val(todo.id))
+          )
+        );
+      }
+
+      function loadTodos(){
+        axios.get('/todos/')
+          .then(function(response){
+            var todos = response.data.todos;
+            
+            for(var i=0; i< todos.length; i++){
+              var nextTodo = todos[i];
+              appendTodoToTable(nextTodo);
+            }
+            setDeleteButtonClick();
+          })
+          .catch(function(error){
+            console.log(error);
+          })
+      }
+
+      function addTodo(name){
+        axios.post('/todos/addtodo', {
+          title: name
+        })
+        .then(function(response){
+          console.log('response: ' + JSON.stringify(response.data.message));
+          if(response.data.success){
+            appendTodoToTable(response.data.todo);
+            setDeleteButtonClick();
+          }
+        })
+        .catch(function(error){
+          console.log(error);
+        });
+      }
+
+      function deleteTodo(id){
+        axios.post('/todos/deletetodo', {
+          id: id
+        })
+        .then(function(response){
+          var message = response.data.message;
+          console.log(message);
+          if(response.data.success){
+            // delete from table
+            $('#row-'+id).remove();
+          }
+        })
+        .catch(function(error){
+          console.log(error)
+        });
+      }
+
+      function setDeleteButtonClick(){
+        $('.delete-button').click(function(){
+          console.log('delet button clicked!');
+          var id = $(this).siblings('input').val();
+          deleteTodo(id);
+        });
+      }
+
+      // INITIALIZATION
+
+      $('#add-button').click(function(){
+        var newTodo = $('#todo-input').val();
+        if(!newTodo) return;
+        addTodo(newTodo);
+      });
+
+      loadTodos();
+      
+    });
+  </script>
+</body>
+</html>

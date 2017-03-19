@@ -1,12 +1,12 @@
-import React from 'react';
-import { render } from 'react-dom';
-import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
-import { Provider } from 'react-redux';
+import React, { Component } from 'react'
+import { render } from 'react-dom'
+import { createStore, applyMiddleware } from 'redux'
+import thunk from 'redux-thunk'
+import { Provider } from 'react-redux'
 
-import TodosTableContainer from './todos/TodosTableContainer';
 import { getTodos } from './todos/TodosActions'
-import TodosReducer from './todos/TodosReducer';
+import TodosTableContainer from './todos/TodosTableContainer'
+import TodosReducer from './todos/TodosReducer'
 
 let initialState = {
   todos: [{id: -1, title: "reactdummyentry", done: false}],
@@ -25,10 +25,15 @@ const Dom = () => (
   </div>
 );
 
+class Main extends Component {
+  componentDidMount(){
+    store.dispatch(getTodos());
+  }
+
+  render() {
+    return <Dom/>
+  }
+}
+
 const app = document.getElementById('app');
-render(<div>
-    <h1>Hello says React!</h1>
-    <Provider store={store}>
-      <TodosTableContainer/>
-    </Provider>
-  </div>, app);
+render(<Main/>, app);

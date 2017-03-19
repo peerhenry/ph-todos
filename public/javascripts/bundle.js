@@ -104,7 +104,6 @@ var addTodo = exports.addTodo = function addTodo(todo) {
   return function (dispatch, getState) {
     console.log('dispatching addTodo... ' + JSON.stringify(todo));
     dispatch({ type: _TodosActionTypes.ADD_TODO, status: _AsyncStatus.FETCHING });
-    console.log('now ajax call to addtodo...');
     axios.post('/todos/addtodo', todo).then(function (response) {
       return dispatch({ type: _TodosActionTypes.ADD_TODO, status: _AsyncStatus.SUCCESS, payload: response.data });
     }).catch(function (err) {
@@ -117,7 +116,6 @@ var deleteTodo = exports.deleteTodo = function deleteTodo(id) {
   return function (dispatch, getState) {
     console.log('dispatching deleteTodo... ' + id);
     dispatch({ type: _TodosActionTypes.DELETE_TODO, status: _AsyncStatus.FETCHING });
-    console.log('now ajax call to deletetodo...');
     axios.post('/todos/deletetodo', { id: id }).then(function (response) {
       return dispatch({ type: _TodosActionTypes.DELETE_TODO, status: _AsyncStatus.SUCCESS, payload: id });
     }).catch(function (err) {
@@ -184,8 +182,7 @@ var getTodos = function getTodos(state, action) {
     case _AsyncStatus.FETCHING:
       return _extends({}, state, { fetching: true });
     case _AsyncStatus.SUCCESS:
-      console.log(JSON.stringify(action.payload));
-      return _extends({}, state, { fetching: false, todos: action.payload });
+      return _extends({}, state, { fetching: false, todos: action.payload.todos });
     case _AsyncStatus.ERROR:
       console.log('error: ' + action.payload);
       return _extends({}, state, { fetching: false });
@@ -352,75 +349,68 @@ var TodosTable = function TodosTable(_ref) {
       addTodo = _ref.addTodo,
       deleteTodo = _ref.deleteTodo;
   return React.createElement(
-    'div',
+    "div",
     null,
     React.createElement(
-      'table',
+      "table",
       null,
       React.createElement(
-        'tbody',
+        "tbody",
         null,
         React.createElement(
-          'tr',
+          "tr",
           null,
-          React.createElement('td', null),
+          React.createElement("td", null),
           React.createElement(
-            'td',
+            "td",
             null,
-            React.createElement('input', { type: 'text' })
+            React.createElement("input", { id: "todo-title", type: "text" })
           ),
           React.createElement(
-            'td',
+            "td",
             null,
             React.createElement(
-              'button',
+              "button",
               { onClick: function onClick(e) {
                   return addTodo({ title: 'jimmy' });
                 } },
-              'Add'
+              "Add"
             )
           )
         ),
         todos.map(function (todo) {
           //console.log('mapping todo: ' + todo.id); // DEBUG
           return React.createElement(
-            'tr',
+            "tr",
             { key: todo.id },
             React.createElement(
-              'td',
+              "td",
               null,
-              React.createElement('input', { type: 'checkbox', defaultChecked: todo.done })
+              React.createElement("input", { type: "checkbox", defaultChecked: todo.done })
             ),
             React.createElement(
-              'td',
+              "td",
               null,
               React.createElement(
-                'span',
+                "span",
                 null,
                 todo.title
               )
             ),
             React.createElement(
-              'td',
+              "td",
               null,
               React.createElement(
-                'button',
+                "button",
                 { onClick: function onClick(e) {
                     return deleteTodo(todo.id);
                   } },
-                'Delete'
+                "Delete"
               )
             )
           );
         })
       )
-    ),
-    React.createElement(
-      'button',
-      { onClick: function onClick(e) {
-          return getTodos();
-        } },
-      'fetch todos'
     )
   );
 };
@@ -433,6 +423,8 @@ exports.default = TodosTable;
 
 "use strict";
 
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = __webpack_require__(0);
 
@@ -448,17 +440,23 @@ var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
 var _reactRedux = __webpack_require__(2);
 
+var _TodosActions = __webpack_require__(1);
+
 var _TodosTableContainer = __webpack_require__(6);
 
 var _TodosTableContainer2 = _interopRequireDefault(_TodosTableContainer);
-
-var _TodosActions = __webpack_require__(1);
 
 var _TodosReducer = __webpack_require__(5);
 
 var _TodosReducer2 = _interopRequireDefault(_TodosReducer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var initialState = {
   todos: [{ id: -1, title: "reactdummyentry", done: false }],
@@ -485,21 +483,32 @@ var Dom = function Dom() {
   );
 };
 
+var Main = function (_Component) {
+  _inherits(Main, _Component);
+
+  function Main() {
+    _classCallCheck(this, Main);
+
+    return _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).apply(this, arguments));
+  }
+
+  _createClass(Main, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      store.dispatch((0, _TodosActions.getTodos)());
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(Dom, null);
+    }
+  }]);
+
+  return Main;
+}(_react.Component);
+
 var app = document.getElementById('app');
-(0, _reactDom.render)(_react2.default.createElement(
-  'div',
-  null,
-  _react2.default.createElement(
-    'h1',
-    null,
-    'Hello says React!'
-  ),
-  _react2.default.createElement(
-    _reactRedux.Provider,
-    { store: store },
-    _react2.default.createElement(_TodosTableContainer2.default, null)
-  )
-), app);
+(0, _reactDom.render)(_react2.default.createElement(Main, null), app);
 
 /***/ })
 /******/ ]);

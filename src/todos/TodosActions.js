@@ -12,7 +12,6 @@ export const getTodos = () => (dispatch, getState) => {
 export const addTodo = (todo) => (dispatch, getState) => {
   console.log('dispatching addTodo... ' + JSON.stringify(todo));
   dispatch({type: ADD_TODO, status: FETCHING});
-  console.log('now ajax call to addtodo...');
   axios.post('/todos/addtodo', todo)
     .then(response => dispatch({type: ADD_TODO, status: SUCCESS, payload: response.data}))
     .catch(err => dispatch({type: ADD_TODO, status: ERROR, payload: err}));
@@ -21,7 +20,6 @@ export const addTodo = (todo) => (dispatch, getState) => {
 export const deleteTodo = (id) => (dispatch, getState) => {
   console.log('dispatching deleteTodo... ' + id);
   dispatch({type: DELETE_TODO, status: FETCHING});
-  console.log('now ajax call to deletetodo...');
   axios.post('/todos/deletetodo', {id: id})
     .then(response => dispatch({type: DELETE_TODO, status: SUCCESS, payload: id}))
     .catch(err => dispatch({type: DELETE_TODO, status: ERROR, payload: err}));
