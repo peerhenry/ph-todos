@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import { createStore, applyMiddleware } from 'redux'
-import thunk from 'redux-thunk'
 import { Provider } from 'react-redux'
+import thunk from 'redux-thunk'
+import createLogger from 'redux-logger'
 
-import { getTodos } from './todos/TodosActions'
-import TodosTableConnector from './todos/TodosTableConnector'
-import TodosReducer from './todos/TodosReducer'
+import { getTodos } from 'todos/TodosActions'
+import TodosTableConnector from 'todos/TodosTableConnector'
+import TodosReducer from 'todos/TodosReducer'
 
 let initialState = {
   todos: [{id: -1, title: "reactdummyentry", done: false}],
@@ -13,7 +14,12 @@ let initialState = {
   visibilityFilter: 'SHOW_ALL'
 };
 
-const store = createStore(TodosReducer, initialState, applyMiddleware(thunk));
+const logger = createLogger();
+const store = createStore(
+  TodosReducer, 
+  initialState, 
+  applyMiddleware(thunk, logger)
+);
 
 class App extends Component {
   componentDidMount(){

@@ -2,7 +2,6 @@ import { FETCHING, SUCCESS, ERROR } from './AsyncStatus';
 import { GET_TODOS, ADD_TODO, DELETE_TODO } from './TodosActionTypes';
 
 export const getTodos = () => (dispatch, getState) => {
-  console.log('dispatching getTodos...');
   dispatch({type: GET_TODOS, status: FETCHING});
   axios.get('/todos/')
     .then((response) => dispatch({type: GET_TODOS, status: SUCCESS, payload: response.data}))
@@ -10,9 +9,8 @@ export const getTodos = () => (dispatch, getState) => {
 }
 
 export const addTodo = (todo) => (dispatch, getState) => {
-  console.log('dispatching addTodo... ' + JSON.stringify(todo));
   if(!todo.title){
-    console.log('title must not be empty.');
+    console.warn('title must not be empty.');
     return;
   }
   dispatch({type: ADD_TODO, status: FETCHING});
@@ -22,7 +20,6 @@ export const addTodo = (todo) => (dispatch, getState) => {
 }
 
 export const deleteTodo = (id) => (dispatch, getState) => {
-  console.log('dispatching deleteTodo... ' + id);
   dispatch({type: DELETE_TODO, status: FETCHING});
   axios.post('/todos/deletetodo', {id: id})
     .then(response => dispatch({type: DELETE_TODO, status: SUCCESS, payload: id}))

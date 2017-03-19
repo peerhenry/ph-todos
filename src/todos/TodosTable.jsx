@@ -9,11 +9,10 @@ const TodosTable = ({todos, getTodos, addTodo, deleteTodo}) => {
         <tbody>
           <tr>
             <td></td>
-            <td><input id="todo-title" type="text" ref={ el => { inputTodoTitle = el }}/></td>
+            <td><input type="text" ref={ el => { inputTodoTitle = el }}/></td>
             <td><button onClick={ e => addTodo({ title: inputTodoTitle.value }) }>Add</button></td>
           </tr>
           {todos.map(todo => {
-            //console.log('mapping todo: ' + todo.id); // DEBUG
             return (
               <tr key={todo.id}>
                 <td><input type="checkbox" defaultChecked={todo.done}/></td>
@@ -24,7 +23,6 @@ const TodosTable = ({todos, getTodos, addTodo, deleteTodo}) => {
           }
           )}
         </tbody>
-        
       </table>
     </div>
   )

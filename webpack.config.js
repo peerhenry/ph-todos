@@ -12,7 +12,7 @@ module.exports = {
 
   resolve: {
     extensions: ['.webpack.js', '.web.js', '.js', '.jsx'],
-    alias: {}
+    alias: {todos: './todos'}
   },
 
   module: {
@@ -33,6 +33,7 @@ module.exports = {
     'react-dom': 'ReactDOM',
     'redux': 'Redux',
     'react-redux': 'ReactRedux',
-    'redux-thunk': 'ReduxThunk'
+    'redux-thunk': 'ReduxThunk',
+    'redux-logger' : 'reduxLogger'
   }
 }
