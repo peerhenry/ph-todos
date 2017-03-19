@@ -11,6 +11,10 @@ export const getTodos = () => (dispatch, getState) => {
 
 export const addTodo = (todo) => (dispatch, getState) => {
   console.log('dispatching addTodo... ' + JSON.stringify(todo));
+  if(!todo.title){
+    console.log('title must not be empty.');
+    return;
+  }
   dispatch({type: ADD_TODO, status: FETCHING});
   axios.post('/todos/addtodo', todo)
     .then(response => dispatch({type: ADD_TODO, status: SUCCESS, payload: response.data}))

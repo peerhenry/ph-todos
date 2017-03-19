@@ -12,14 +12,14 @@ const getVisibleTodos = (todos, filter) => {
     case 'SHOW_ACTIVE':
       return todos.filter(t => !t.completed)
   }
-};
+}
 
 const mapStateToProps = (state) => {
   console.log('the todos prop will be: ' + JSON.stringify(state.todos));
   return {
     todos: getVisibleTodos(state.todos, state.visibilityFilter)
   }
-};
+}
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -29,6 +29,6 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-const TodosTableContainer = connect(mapStateToProps, mapDispatchToProps)(TodosTable);
+const TodosTableConnector = connect(mapStateToProps, mapDispatchToProps)(TodosTable);
 
-export default TodosTableContainer;
+export default TodosTableConnector;
