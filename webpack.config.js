@@ -51,7 +51,8 @@ module.exports = {
     'react-redux': 'ReactRedux',
     'redux-thunk': 'ReduxThunk',
     'redux-logger' : 'reduxLogger',
-    'axios': 'Axios'
+    'axios': 'Axios',
+    'immutable': 'Immutable'
   },
   
   devServer: {

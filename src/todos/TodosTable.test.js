@@ -2,13 +2,8 @@ import React from 'react'
 import { expect } from 'chai'
 import { shallow, mount } from 'enzyme'
 import sinon from 'sinon'
-import jsdom from 'jsdom'
 
 import TodosTable from 'todos/TodosTable'
-
-const doc = jsdom.jsdom('<!doctype html><html><body></body></html>');
-global.document = doc
-global.window = doc.defaultView;
 
 describe('<TodosTable />', () => {
 
@@ -37,11 +32,6 @@ describe('<TodosTable />', () => {
   it('Calls correct function for adding todo', () => {
     const wrapper = mount(<TodosTable {...props}/>)
     wrapper.find('button').simulate('click')
-    //expect(props.addTodo).to.have.property('callCount', 1)
-    expect(props.addTodo.calledOnce).to.equal(true)
+    expect(props.addTodo.calledOnce).to.be.true
   })
-
-  /*it('has another dummy test', () => {
-    expect(1).to.equal(2)
-  })//*/
 })

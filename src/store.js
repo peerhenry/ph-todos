@@ -2,18 +2,22 @@ import { createStore, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
 import TodosReducer from 'todos/TodosReducer'
+import { fromJS } from 'immutable'
 
-let initialState = {
-  todos: [],
+const initialState = fromJS({
+  todos: [ {id: -1, title: "dummy", done: true} ],
   calling: false,
   visibilityFilter: 'SHOW_ALL'
-};
+})
+
+console.log('now logging initial state keys')
+console.log(Object.keys(initialState))
 
 const logger = createLogger();
 const store = createStore(
   TodosReducer, 
   initialState, 
   applyMiddleware(thunk, logger)
-);
+)
 
 export default store

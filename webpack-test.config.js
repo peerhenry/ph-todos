@@ -21,12 +21,6 @@ module.exports = {
   resolve: config.resolve,
   module: config.module,
 
-  plugins: [
-    new WebpackShellPlugin({
-      onBuildExit: 'mocha ' + outputDir + '/' + outputBundle + ' --opts test/mocha.opts'
-    })
-  ],
-
   externals: {
     'react': 'React',
     'react-dom': 'ReactDOM',

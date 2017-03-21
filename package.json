@@ -6,11 +6,13 @@
     "start": "nodemon ./bin/www",
     "build": "webpack",
     "build.watch": "webpack --watch",
-    "test.build": "webpack --progress --colors --config webpack-test.config.js",
-    "test.build.watch": "webpack --progress --colors --config webpack-test.config.js --watch",
-    "test.serve": "autoreload-server -w \"index.html\" ./test-report 8777",
-    "test": "concurrently --kill-others \"npm run test.build.watch\" \"npm run test.serve\"",
-    "test.start": "startchrome.bat http://localhost:8777/index.html && npm test"
+    "test.build": "webpack --colors --config webpack-test.config.js",
+    "test.build.watch": "npm run test.build -- --watch",
+    "test.run": "mocha test-report/testbundle.js --opts test/mocha.opts || exit 0",
+    "test.run.watch": "mocha test-report/testbundle.js --opts test/mocha.opts --watch",
+    "test.serve": "autoreload-server -w \"**/**.html\" ./test-report 8777",
+    "test": "concurrently --kill-others \"npm run test.build.watch\" \"npm run test.run.watch\" \"npm run test.serve\"",
+    "test.start": "npm run test.build && startchrome.bat http://localhost:8777/index.html && npm test"
   },
   "author": "PeerHenry",
   "dependencies": {
@@ -19,6 +21,7 @@
     "debug": "~2.6.0",
     "ejs": "^2.5.6",
     "express": "~4.14.1",
+    "immutable": "^3.8.1",
     "morgan": "^1.7.0",
     "pug": "^2.0.0-beta11",
     "react": "^15.4.2",
