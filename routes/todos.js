@@ -31,7 +31,7 @@ router.post('/deletetodo/', function(request, response) {
   todosLogic.deleteTodo(todoId);
   var message = 'Todo ' + todoId + ' succesfully deleted.';
   response.contentType('json');
-  response.send({ message: message });
+  response.send({ message: message, id: todoId });
 });
 
 module.exports = router;

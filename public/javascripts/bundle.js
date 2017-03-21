@@ -60,10 +60,10 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
+/******/ 	__webpack_require__.p = "/javascripts/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 13);
+/******/ 	return __webpack_require__(__webpack_require__.s = 15);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -82,7 +82,7 @@ module.exports = React;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var FETCHING = exports.FETCHING = 'FETCHING';
+var CALLING = exports.CALLING = 'CALLING';
 var SUCCESS = exports.SUCCESS = 'SUCCESS';
 var ERROR = exports.ERROR = 'ERROR';
 
@@ -110,47 +110,26 @@ var DELETE_TODO = exports.DELETE_TODO = 'DELETE_TODO';
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.deleteTodo = exports.addTodo = exports.getTodos = undefined;
+exports.deleteTodoThunk = exports.addTodoThunk = exports.getTodosThunk = undefined;
 
-var _AsyncStatus = __webpack_require__(1);
+var _AxiosThunks = __webpack_require__(7);
 
 var _TodosActionTypes = __webpack_require__(2);
 
-var getTodos = exports.getTodos = function getTodos() {
-  return function (dispatch, getState) {
-    dispatch({ type: _TodosActionTypes.GET_TODOS, status: _AsyncStatus.FETCHING });
-    axios.get('/todos/').then(function (response) {
-      return dispatch({ type: _TodosActionTypes.GET_TODOS, status: _AsyncStatus.SUCCESS, payload: response.data });
-    }).catch(function (err) {
-      return dispatch({ type: _TodosActionTypes.GET_TODOS, status: _AsyncStatus.ERROR, payload: err });
-    });
-  };
+var getTodosThunk = exports.getTodosThunk = function getTodosThunk() {
+  return (0, _AxiosThunks.getThunk)(_TodosActionTypes.GET_TODOS, '/todos/');
 };
 
-var addTodo = exports.addTodo = function addTodo(todo) {
-  return function (dispatch, getState) {
-    if (!todo.title) {
-      console.warn('title must not be empty.');
-      return;
-    }
-    dispatch({ type: _TodosActionTypes.ADD_TODO, status: _AsyncStatus.FETCHING });
-    axios.post('/todos/addtodo', todo).then(function (response) {
-      return dispatch({ type: _TodosActionTypes.ADD_TODO, status: _AsyncStatus.SUCCESS, payload: response.data });
-    }).catch(function (err) {
-      return dispatch({ type: _TodosActionTypes.ADD_TODO, status: _AsyncStatus.ERROR, payload: err });
-    });
-  };
+var addTodoThunk = exports.addTodoThunk = function addTodoThunk(todo) {
+  if (!todo.title) {
+    console.warn('title must not be empty.');
+    return function (dispatch) {};
+  }
+  return (0, _AxiosThunks.postThunk)(_TodosActionTypes.ADD_TODO, '/todos/addtodo', todo);
 };
 
-var deleteTodo = exports.deleteTodo = function deleteTodo(id) {
-  return function (dispatch, getState) {
-    dispatch({ type: _TodosActionTypes.DELETE_TODO, status: _AsyncStatus.FETCHING });
-    axios.post('/todos/deletetodo', { id: id }).then(function (response) {
-      return dispatch({ type: _TodosActionTypes.DELETE_TODO, status: _AsyncStatus.SUCCESS, payload: id });
-    }).catch(function (err) {
-      return dispatch({ type: _TodosActionTypes.DELETE_TODO, status: _AsyncStatus.ERROR, payload: err });
-    });
-  };
+var deleteTodoThunk = exports.deleteTodoThunk = function deleteTodoThunk(id) {
+  return (0, _AxiosThunks.postThunk)(_TodosActionTypes.DELETE_TODO, '/todos/deletetodo', { id: id });
 };
 
 /***/ }),
@@ -176,27 +155,17 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _redux = __webpack_require__(10);
-
 var _reactRedux = __webpack_require__(4);
-
-var _reduxThunk = __webpack_require__(11);
-
-var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
-
-var _reduxLogger = __webpack_require__(12);
-
-var _reduxLogger2 = _interopRequireDefault(_reduxLogger);
 
 var _TodosActions = __webpack_require__(3);
 
-var _TodosTableConnector = __webpack_require__(9);
+var _TodosTableConnector = __webpack_require__(11);
 
 var _TodosTableConnector2 = _interopRequireDefault(_TodosTableConnector);
 
-var _TodosReducer = __webpack_require__(7);
+var _store = __webpack_require__(8);
 
-var _TodosReducer2 = _interopRequireDefault(_TodosReducer);
+var _store2 = _interopRequireDefault(_store);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -205,15 +174,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var initialState = {
-  todos: [{ id: -1, title: "reactdummyentry", done: false }],
-  fetching: false,
-  visibilityFilter: 'SHOW_ALL'
-};
-
-var logger = (0, _reduxLogger2.default)();
-var store = (0, _redux.createStore)(_TodosReducer2.default, initialState, (0, _redux.applyMiddleware)(_reduxThunk2.default, logger));
 
 var App = function (_Component) {
   _inherits(App, _Component);
@@ -227,7 +187,7 @@ var App = function (_Component) {
   _createClass(App, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      store.dispatch((0, _TodosActions.getTodos)());
+      _store2.default.dispatch((0, _TodosActions.getTodosThunk)());
     }
   }, {
     key: 'render',
@@ -242,7 +202,7 @@ var App = function (_Component) {
         ),
         _react2.default.createElement(
           _reactRedux.Provider,
-          { store: store },
+          { store: _store2.default },
           _react2.default.createElement(_TodosTableConnector2.default, null)
         )
       );
@@ -270,6 +230,88 @@ module.exports = ReactDOM;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.postThunk = exports.getThunk = undefined;
+
+var _AsyncStatus = __webpack_require__(1);
+
+var applyDispatch = function applyDispatch(dispatch, type, status, payload) {
+  return dispatch({
+    type: type,
+    status: status,
+    payload: payload
+  });
+};
+
+var getThunk = exports.getThunk = function getThunk(type, url) {
+  return function (dispatch) {
+    applyDispatch(dispatch, type, _AsyncStatus.CALLING);
+    axios.get(url).then(function (response) {
+      return applyDispatch(dispatch, type, _AsyncStatus.SUCCESS, response.data);
+    }).catch(function (err) {
+      return applyDispatch(dispatch, type, _AsyncStatus.ERROR, err);
+    });
+  };
+};
+
+var postThunk = exports.postThunk = function postThunk(type, url, request) {
+  return function (dispatch) {
+    applyDispatch(dispatch, type, _AsyncStatus.CALLING);
+    axios.post(url, request).then(function (response) {
+      return applyDispatch(dispatch, type, _AsyncStatus.SUCCESS, response.data);
+    }).catch(function (err) {
+      return applyDispatch(dispatch, type, _AsyncStatus.ERROR, err);
+    });
+  };
+};
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _redux = __webpack_require__(12);
+
+var _reduxThunk = __webpack_require__(13);
+
+var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
+
+var _reduxLogger = __webpack_require__(14);
+
+var _reduxLogger2 = _interopRequireDefault(_reduxLogger);
+
+var _TodosReducer = __webpack_require__(9);
+
+var _TodosReducer2 = _interopRequireDefault(_TodosReducer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var initialState = {
+  todos: [],
+  calling: false,
+  visibilityFilter: 'SHOW_ALL'
+};
+
+var logger = (0, _reduxLogger2.default)();
+var store = (0, _redux.createStore)(_TodosReducer2.default, initialState, (0, _redux.applyMiddleware)(_reduxThunk2.default, logger));
+
+exports.default = store;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -281,12 +323,12 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 var getTodos = function getTodos(state, action) {
   switch (action.status) {
-    case _AsyncStatus.FETCHING:
-      return _extends({}, state, { fetching: true });
+    case _AsyncStatus.CALLING:
+      return _extends({}, state, { calling: true });
     case _AsyncStatus.SUCCESS:
-      return _extends({}, state, { fetching: false, todos: action.payload.todos });
+      return _extends({}, state, { calling: false, todos: action.payload.todos });
     case _AsyncStatus.ERROR:
-      return _extends({}, state, { fetching: false });
+      return _extends({}, state, { calling: false });
     default:
       return state;
   }
@@ -294,12 +336,12 @@ var getTodos = function getTodos(state, action) {
 
 var addTodo = function addTodo(state, action) {
   switch (action.status) {
-    case _AsyncStatus.FETCHING:
-      return _extends({}, state, { fetching: true });
+    case _AsyncStatus.CALLING:
+      return _extends({}, state, { calling: true });
     case _AsyncStatus.SUCCESS:
-      return _extends({}, state, { todos: [].concat(_toConsumableArray(state.todos), [action.payload.todo]) });
+      return _extends({}, state, { calling: false, todos: [].concat(_toConsumableArray(state.todos), [action.payload.todo]) });
     case _AsyncStatus.ERROR:
-      return _extends({}, state, { fetching: false });
+      return _extends({}, state, { calling: false });
     default:
       return state;
   }
@@ -307,14 +349,14 @@ var addTodo = function addTodo(state, action) {
 
 var deleteTodo = function deleteTodo(state, action) {
   switch (action.status) {
-    case _AsyncStatus.FETCHING:
-      return _extends({}, state, { fetching: true });
+    case _AsyncStatus.CALLING:
+      return _extends({}, state, { calling: true });
     case _AsyncStatus.SUCCESS:
-      return _extends({}, state, { fetching: false, todos: state.todos.filter(function (todo) {
-          return todo.id != action.payload;
+      return _extends({}, state, { calling: false, todos: state.todos.filter(function (todo) {
+          return todo.id != action.payload.id;
         }) });
     case _AsyncStatus.ERROR:
-      return _extends({}, state, { fetching: false });
+      return _extends({}, state, { calling: false });
     default:
       return state;
   }
@@ -340,7 +382,7 @@ var TodosReducer = function TodosReducer(state, action) {
 exports.default = TodosReducer;
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -358,7 +400,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var TodosTable = function TodosTable(_ref) {
   var todos = _ref.todos,
-      getTodos = _ref.getTodos,
       addTodo = _ref.addTodo,
       deleteTodo = _ref.deleteTodo;
 
@@ -435,7 +476,7 @@ var TodosTable = function TodosTable(_ref) {
 exports.default = TodosTable;
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -453,7 +494,7 @@ var _reactRedux = __webpack_require__(4);
 
 var _TodosActions = __webpack_require__(3);
 
-var _TodosTable = __webpack_require__(8);
+var _TodosTable = __webpack_require__(10);
 
 var _TodosTable2 = _interopRequireDefault(_TodosTable);
 
@@ -482,14 +523,11 @@ var mapStateToProps = function mapStateToProps(state) {
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
-    getTodos: function getTodos() {
-      dispatch(_TodosActions.getTodos);
-    },
     addTodo: function addTodo(todo) {
-      dispatch((0, _TodosActions.addTodo)(todo));
+      dispatch((0, _TodosActions.addTodoThunk)(todo));
     },
     deleteTodo: function deleteTodo(id) {
-      dispatch((0, _TodosActions.deleteTodo)(id));
+      dispatch((0, _TodosActions.deleteTodoThunk)(id));
     }
   };
 };
@@ -499,25 +537,25 @@ var TodosTableConnector = (0, _reactRedux.connect)(mapStateToProps, mapDispatchT
 exports.default = TodosTableConnector;
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports) {
 
 module.exports = Redux;
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports) {
 
 module.exports = ReduxThunk;
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports) {
 
 module.exports = reduxLogger;
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

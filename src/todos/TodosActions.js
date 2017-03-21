@@ -1,27 +1,14 @@
-import { FETCHING, SUCCESS, ERROR } from './AsyncStatus';
+import { getThunk, postThunk } from 'async/AxiosThunks'
 import { GET_TODOS, ADD_TODO, DELETE_TODO } from './TodosActionTypes';
 
-export const getTodos = () => (dispatch, getState) => {
-  dispatch({type: GET_TODOS, status: FETCHING});
-  axios.get('/todos/')
-    .then((response) => dispatch({type: GET_TODOS, status: SUCCESS, payload: response.data}))
-    .catch(err => dispatch({type: GET_TODOS, status: ERROR, payload: err}));
-}
+export const getTodosThunk = () => getThunk(GET_TODOS, '/todos/')
 
-export const addTodo = (todo) => (dispatch, getState) => {
+export const addTodoThunk = (todo) => {
   if(!todo.title){
     console.warn('title must not be empty.');
-    return;
+    return (dispatch => {});
   }
-  dispatch({type: ADD_TODO, status: FETCHING});
-  axios.post('/todos/addtodo', todo)
-    .then(response => dispatch({type: ADD_TODO, status: SUCCESS, payload: response.data}))
-    .catch(err => dispatch({type: ADD_TODO, status: ERROR, payload: err}));
+  return postThunk(ADD_TODO, '/todos/addtodo', todo)
 }
 
-export const deleteTodo = (id) => (dispatch, getState) => {
-  dispatch({type: DELETE_TODO, status: FETCHING});
-  axios.post('/todos/deletetodo', {id: id})
-    .then(response => dispatch({type: DELETE_TODO, status: SUCCESS, payload: id}))
-    .catch(err => dispatch({type: DELETE_TODO, status: ERROR, payload: err}));
-}
+export const deleteTodoThunk = (id) => postThunk(DELETE_TODO, '/todos/deletetodo', {id: id})

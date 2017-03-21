@@ -1,6 +1,6 @@
 import react from 'react';
 import { connect } from 'react-redux';
-import { getTodos, addTodo, deleteTodo } from './TodosActions';
+import { addTodoThunk, deleteTodoThunk } from './TodosActions';
 import TodosTable from './TodosTable';
 
 const getVisibleTodos = (todos, filter) => {
@@ -22,9 +22,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getTodos: () => { dispatch(getTodos) },
-    addTodo: todo => { dispatch(addTodo(todo)) },
-    deleteTodo: id => { dispatch(deleteTodo(id)) }
+    addTodo: todo => { dispatch(addTodoThunk(todo)) },
+    deleteTodo: id => { dispatch(deleteTodoThunk(id)) }
   }
 }
 
