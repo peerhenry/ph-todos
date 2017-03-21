@@ -1,28 +1,17 @@
 # ph-todos
 dummy nodejs app to learn connecting to a mongodb, as well as ajax with react & redux.
 
-## Requirements
-Make sure you have globally installed webpack and nodemon. You can view the packages you have installed globally with the command:
-
-`npm list -g --depth 0`
-
-If webpack or nodemon are not on the list you can install them with the command:
-
-`npm i -g webpack nodemon`
-
 ## Setup
 After downloading the source code, execute following commands:
 `npm install` - Installs all required node packages.
-`webpack` - Compiles the react code.
+`npm run build` - Compiles the react code with webpack.
 `start.bat` - Enables debug logging and starts the server with nodemon.
 
-The batch file simply sets an environment variable for logging in the command shell for Windows before starting the server with nodemon. Alternatively, you can start the server by executing:
-
-`npm start` or `nodemon ./bin/www` or if prefer no automatic restart: `node ./bin/www`
+The batch file simply sets an environment variable for logging in the command shell for Windows before starting the server with nodemon. Alternatively, you can start the server by executing `npm start`. If you want to start the server without automatic restart, run: `node ./bin/www`.
 
 ## Development
-Nodemon will automatically restart the server when it detects changes. If you also want the react code to autocompile with webpack, open another console and run:
-`webpack --watch`
+Nodemon will automatically restart the server when it detects changes. If you also want the react code to autocompile with webpack when making changes to source files, open another console and run:
+`npm run build.watch`
 After webpack has recompiled, nodemon will also restart the server.
 
 ## Debug Logging
