@@ -5,6 +5,9 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+var debug = require('debug')('ph-todos:app.js');
+var stringify = require('node-stringify');
+
 var app = express();
 var clientPath = '../client';
 
@@ -23,10 +26,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, clientPath, '/public')));
 
-var index = require('../routes/index');
-var todos = require('../routes/todos');
-app.use('/', index);
-app.use('/todos/', todos);
+debug('--- Now going to load and couple the new serverbundle...');
+var bundle = require('./serverbundle');
+bundle.configRoutes(app);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

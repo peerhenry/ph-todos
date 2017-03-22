@@ -1,3 +1,0 @@
---require test/mochareqs
---reporter mochawesome
---reporter-options reportFilename=index,reportDir=test-report

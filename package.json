@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "start": "nodemon ./bin/www",
-    "build": "webpack",
-    "build.watch": "webpack --watch",
+    "build.client": "webpack",
+    "build.client.watch": "webpack --watch",
+    "build.server": "webpack --config webpack.config.server.js",
+    "build.server.watch": "npm run server.build -- --watch",
     "test.build": "webpack --config webpack-test.config.js",
     "test.build.watch": "npm run test.build -- --watch",
     "test.run": "mocha test-report/testbundle.js --opts test/mocha.opts || exit 0",
@@ -23,6 +25,7 @@
     "express": "~4.14.1",
     "immutable": "^3.8.1",
     "morgan": "^1.7.0",
+    "node-stringify": "0.0.19",
     "pug": "^2.0.0-beta11",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
@@ -54,6 +57,7 @@
     "sinon": "^2.0.0",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.4.2",
+    "webpack-node-externals": "^1.5.4",
     "webpack-shell-plugin": "^0.5.0"
   }
 }
