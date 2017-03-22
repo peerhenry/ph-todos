@@ -6,7 +6,7 @@
     "start": "nodemon ./bin/www",
     "build": "webpack",
     "build.watch": "webpack --watch",
-    "test.build": "webpack --colors --config webpack-test.config.js",
+    "test.build": "webpack --config webpack-test.config.js",
     "test.build.watch": "npm run test.build -- --watch",
     "test.run": "mocha test-report/testbundle.js --opts test/mocha.opts || exit 0",
     "test.run.watch": "mocha test-report/testbundle.js --opts test/mocha.opts --watch",

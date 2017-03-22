@@ -4,10 +4,10 @@ var path = require('path');
 module.exports = {
 
   context: __dirname,
-  entry: './src/main',
+  entry: './client/src/main',
 
   output: {
-    path: __dirname + '/public/javascripts',
+    path: __dirname + '/client/public/javascripts',
     publicPath: '/javascripts/',
     filename: 'bundle.js'
   },
@@ -18,7 +18,7 @@ module.exports = {
   resolve: {
     extensions: ['.webpack.js', '.web.js', '.js', '.jsx'],
     modules: [
-      "./src",
+      "./client/src",
       path.resolve(__dirname, 'node_modules')
     ],
     alias: { 
@@ -56,7 +56,7 @@ module.exports = {
   },
   
   devServer: {
-    contentBase: "./views",
+    contentBase: "./client/public/views",
     inline: true,
     stats: {
       colors: true

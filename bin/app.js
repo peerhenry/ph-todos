@@ -6,24 +6,25 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var app = express();
+var clientPath = '../client';
 
 // view engine setup
-app.set('views', path.join(__dirname, 'public/views'));
+app.set('views', path.join(__dirname, clientPath, '/public/views'));
 // app.set('view engine', 'jade'); // not using Jade atm.
 // app.set('view engine', 'pug');
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 
 // uncomment after placing your favicon in /public
-app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(favicon(path.join(__dirname, clientPath, '/public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, clientPath, '/public')));
 
-var index = require('./routes/index');
-var todos = require('./routes/todos');
+var index = require('../routes/index');
+var todos = require('../routes/todos');
 app.use('/', index);
 app.use('/todos/', todos);
 
