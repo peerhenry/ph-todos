@@ -11,7 +11,6 @@ class TodosLogic{
   }
 
   getTodos(){
-    debug('getTodos');
     return this.todosData.getTodos();
   }
 

@@ -5,7 +5,7 @@ import TodosReducer from 'todos/TodosReducer'
 import { fromJS } from 'immutable'
 
 const initialState = fromJS({
-  todos: [ {id: -1, title: "dummy", done: true} ],
+  todos: {},
   calling: false,
   visibilityFilter: 'SHOW_ALL'
 })

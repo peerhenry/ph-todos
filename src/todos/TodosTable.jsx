@@ -15,10 +15,10 @@ const TodosTable = ({todos, addTodo, deleteTodo}) => {
           {
             todos.map(todo => {
               return (
-                <tr key={todo.get('id')}>
-                  <td><input type="checkbox" defaultChecked={todo.get('done')}/></td>
-                  <td><span>{todo.get('title')}</span></td>
-                  <td><button onClick={e => deleteTodo(todo.get('id'))}>Delete</button></td>
+                <tr key={ todo.id }>
+                  <td><input type="checkbox" defaultChecked={ todo.done }/></td>
+                  <td><span>{ todo.title }</span></td>
+                  <td><button onClick={e => deleteTodo(todo.id)}>Delete</button></td>
                 </tr>
               )
             })

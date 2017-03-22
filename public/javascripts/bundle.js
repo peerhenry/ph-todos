@@ -70,10 +70,16 @@
 /* 0 */
 /***/ (function(module, exports) {
 
-module.exports = React;
+module.exports = Immutable;
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports) {
+
+module.exports = React;
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87,7 +93,7 @@ var SUCCESS = exports.SUCCESS = 'SUCCESS';
 var ERROR = exports.ERROR = 'ERROR';
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101,7 +107,7 @@ var ADD_TODO = exports.ADD_TODO = 'ADD_TODO';
 var DELETE_TODO = exports.DELETE_TODO = 'DELETE_TODO';
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -114,7 +120,7 @@ exports.deleteTodoThunk = exports.addTodoThunk = exports.getTodosThunk = undefin
 
 var _AxiosThunks = __webpack_require__(8);
 
-var _TodosActionTypes = __webpack_require__(2);
+var _TodosActionTypes = __webpack_require__(3);
 
 var getTodosThunk = exports.getTodosThunk = function getTodosThunk() {
   return (0, _AxiosThunks.getThunk)(_TodosActionTypes.GET_TODOS, '/todos/');
@@ -131,12 +137,6 @@ var addTodoThunk = exports.addTodoThunk = function addTodoThunk(todo) {
 var deleteTodoThunk = exports.deleteTodoThunk = function deleteTodoThunk(id) {
   return (0, _AxiosThunks.postThunk)(_TodosActionTypes.DELETE_TODO, '/todos/deletetodo', { id: id });
 };
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-module.exports = Immutable;
 
 /***/ }),
 /* 5 */
@@ -157,13 +157,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(0);
+var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(5);
 
-var _TodosActions = __webpack_require__(3);
+var _TodosActions = __webpack_require__(4);
 
 var _TodosTableConnector = __webpack_require__(12);
 
@@ -238,7 +238,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.postThunk = exports.getThunk = undefined;
 
-var _AsyncStatus = __webpack_require__(1);
+var _AsyncStatus = __webpack_require__(2);
 
 var applyDispatch = function applyDispatch(dispatch, type, status, payload) {
   return dispatch({
@@ -295,12 +295,12 @@ var _TodosReducer = __webpack_require__(10);
 
 var _TodosReducer2 = _interopRequireDefault(_TodosReducer);
 
-var _immutable = __webpack_require__(4);
+var _immutable = __webpack_require__(0);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var initialState = (0, _immutable.fromJS)({
-  todos: [{ id: -1, title: "dummy", done: true }],
+  todos: {},
   calling: false,
   visibilityFilter: 'SHOW_ALL'
 });
@@ -324,18 +324,29 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _AsyncStatus = __webpack_require__(1);
+var _AsyncStatus = __webpack_require__(2);
 
-var _TodosActionTypes = __webpack_require__(2);
+var _TodosActionTypes = __webpack_require__(3);
 
-var _immutable = __webpack_require__(4);
+var _immutable = __webpack_require__(0);
+
+function convertTodos(todos) {
+  if (todos instanceof Array) {
+    var todosObject = {};
+    for (var i = 0; i < todos.length; ++i) {
+      todosObject[todos[i].id] = todos[i];
+    }return (0, _immutable.fromJS)(todosObject);
+  } else return (0, _immutable.fromJS)(todos);
+}
 
 var getTodos = function getTodos(state, action) {
   switch (action.status) {
     case _AsyncStatus.CALLING:
       return state.set('calling', true);
     case _AsyncStatus.SUCCESS:
-      return state.merge({ calling: false, todos: action.payload.todos });
+      // todos are saved in state as a Map with ids as keys
+      var newTodos = convertTodos(action.payload.todos);
+      return state.merge({ calling: false, todos: newTodos });
     case _AsyncStatus.ERROR:
       return state.set('calling', false);
     default:
@@ -348,8 +359,8 @@ var addTodo = function addTodo(state, action) {
     case _AsyncStatus.CALLING:
       return state.set('calling', true);
     case _AsyncStatus.SUCCESS:
-      var newTodo = (0, _immutable.fromJS)(action.payload.todo);
-      var newTodos = state.get('todos').push(newTodo);
+      var newTodo = (0, _immutable.Map)(action.payload.todo);
+      var newTodos = state.get('todos').set(newTodo.get('id'), newTodo);
       return state.merge({ calling: false, todos: newTodos });
     case _AsyncStatus.ERROR:
       return state.set('calling', false);
@@ -400,7 +411,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _react = __webpack_require__(0);
+var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -414,64 +425,64 @@ var TodosTable = function TodosTable(_ref) {
   var inputTodoTitle = void 0;
 
   return React.createElement(
-    'div',
+    "div",
     null,
     React.createElement(
-      'table',
+      "table",
       null,
       React.createElement(
-        'tbody',
+        "tbody",
         null,
         React.createElement(
-          'tr',
+          "tr",
           null,
-          React.createElement('td', null),
+          React.createElement("td", null),
           React.createElement(
-            'td',
+            "td",
             null,
-            React.createElement('input', { type: 'text', ref: function ref(el) {
+            React.createElement("input", { type: "text", ref: function ref(el) {
                 inputTodoTitle = el;
               } })
           ),
           React.createElement(
-            'td',
+            "td",
             null,
             React.createElement(
-              'button',
+              "button",
               { onClick: function onClick(e) {
                   return addTodo({ title: inputTodoTitle.value });
                 } },
-              'Add'
+              "Add"
             )
           )
         ),
         todos.map(function (todo) {
           return React.createElement(
-            'tr',
-            { key: todo.get('id') },
+            "tr",
+            { key: todo.id },
             React.createElement(
-              'td',
+              "td",
               null,
-              React.createElement('input', { type: 'checkbox', defaultChecked: todo.get('done') })
+              React.createElement("input", { type: "checkbox", defaultChecked: todo.done })
             ),
             React.createElement(
-              'td',
+              "td",
               null,
               React.createElement(
-                'span',
+                "span",
                 null,
-                todo.get('title')
+                todo.title
               )
             ),
             React.createElement(
-              'td',
+              "td",
               null,
               React.createElement(
-                'button',
+                "button",
                 { onClick: function onClick(e) {
-                    return deleteTodo(todo.get('id'));
+                    return deleteTodo(todo.id);
                   } },
-                'Delete'
+                "Delete"
               )
             )
           );
@@ -493,46 +504,53 @@ exports.default = TodosTable;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.mapDispatchToProps = exports.mapStateToProps = undefined;
 
-var _react = __webpack_require__(0);
+var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(5);
 
-var _TodosActions = __webpack_require__(3);
+var _immutable = __webpack_require__(0);
+
+var _TodosActions = __webpack_require__(4);
 
 var _TodosTable = __webpack_require__(11);
 
 var _TodosTable2 = _interopRequireDefault(_TodosTable);
 
-var _immutable = __webpack_require__(4);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var getVisibleTodos = function getVisibleTodos(todos, filter) {
+var filterVisibleTodos = function filterVisibleTodos(todos, filter) {
   switch (filter) {
     case 'SHOW_ALL':
       return todos;
     case 'SHOW_COMPLETED':
       return todos.filter(function (t) {
-        return t.get('done');
+        return t.done;
       });
     case 'SHOW_ACTIVE':
       return todos.filter(function (t) {
-        return !t.get('done');
+        return !t.done;
       });
+    default:
+      return todos;
   }
 };
 
-var mapStateToProps = function mapStateToProps(state) {
-  var todos = state.get('todos');
+var mapStateToProps = exports.mapStateToProps = function mapStateToProps(state) {
+  var todosMap = state.get('todos');
+  var todosObject = todosMap.toJS();
+  var todosArray = Object.keys(todosObject).map(function (key) {
+    return todosObject[key];
+  });
   return {
-    todos: getVisibleTodos(todos, state.get('visibilityFilter'))
+    todos: filterVisibleTodos(todosArray, state.get('visibilityFilter'))
   };
 };
 
-var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+var mapDispatchToProps = exports.mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
     addTodo: function addTodo(todo) {
       dispatch((0, _TodosActions.addTodoThunk)(todo));
