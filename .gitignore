@@ -4,3 +4,4 @@ karma_html
 mochawesome-reports
 .tmp
 test-report
+client/test-report

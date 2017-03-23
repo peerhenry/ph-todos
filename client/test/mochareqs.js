@@ -17,16 +17,3 @@ global.Chai = Chai;
 global.Enzyme = Enzyme;
 global.Sinon = Sinon;
 global.jsdom = jsdom;
-
-/*var exposedProperties = ['window', 'navigator', 'document']
-global.document = jsdom('');
-global.window = codument.defaultView;
-Object.keys(document.defaultView).forEach(prop => {
-  if(typeof global[prop] === 'undefined'){
-    exposedProperties.push(prop);
-    global[prop] = document.defaultView[prop];
-  }
-});
-global.navigator = {
-  userAgent: 'node.js'
-};//*/
