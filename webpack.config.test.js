@@ -1,19 +1,15 @@
 var webpack = require('webpack');
 var path = require('path');
 var config = require('./webpack.config');
-var WebpackShellPlugin = require('webpack-shell-plugin');
-
-const outputDir = 'test-report';
-const outputBundle = 'testbundle.js';
 
 module.exports = {
 
   context: __dirname,
-  entry: './test/all-tests.js',
+  entry: './client/test/all-tests.js',
 
   output: {
-    path: __dirname + '/' + outputDir,
-    filename: outputBundle
+    path: __dirname + '/client/test-report',
+    filename: 'testbundle.js'
   },
 
   devtool: 'eval',
@@ -26,6 +22,8 @@ module.exports = {
     'react-dom': 'ReactDOM',
     'redux': 'Redux',
     'react-redux': 'ReactRedux',
+    'axios': 'Axios',
+    'immutable': 'Immutable',
     'mocha': 'Mocha',
     'enzyme': 'Enzyme',
     'chai': 'Chai',

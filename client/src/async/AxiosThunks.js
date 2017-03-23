@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { CALLING, SUCCESS, ERROR } from './AsyncStatus';
 
 const applyDispatch = (dispatch, type, status, payload) => {
@@ -10,14 +11,14 @@ const applyDispatch = (dispatch, type, status, payload) => {
 
 export const getThunk = (type, url) => (dispatch) => {
   applyDispatch(dispatch, type, CALLING)
-  axios.get(url)
+  return axios.get(url)
     .then(response => applyDispatch(dispatch, type, SUCCESS, response.data))
     .catch(err => applyDispatch(dispatch, type, ERROR, err))
 }
 
 export const postThunk = (type, url, request) => (dispatch) => {
   applyDispatch(dispatch, type, CALLING)
-  axios.post(url, request)
+  return axios.post(url, request)
     .then(response => applyDispatch(dispatch, type, SUCCESS, response.data))
     .catch(err => applyDispatch(dispatch, type, ERROR, err))
 }

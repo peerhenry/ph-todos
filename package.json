@@ -4,31 +4,28 @@
   "private": true,
   "scripts": {
     "start": "nodemon ./bin/www",
-
     "build.client": "webpack",
     "build.client.watch": "webpack --watch",
-
     "build.server": "webpack --config webpack.server.js",
     "build.server.watch": "npm run server.build -- --watch",
-
     "test.client.build": "webpack --config webpack.config.test.js",
     "test.client.build.watch": "npm run test.client.build -- --watch",
     "test.client.run": "mocha client/test-report/testbundle.js --opts client/test/mocha.opts || exit 0",
     "test.client.run.watch": "mocha client/test-report/testbundle.js --opts client/test/mocha.opts --watch",
+    "test.client": "npm run test.client.build && npm run test.client.run",
     "test.client.serve": "autoreload-server -w \"**/**.html\" ./client/test-report 8777",
     "test.client.go": "concurrently --kill-others \"npm run test.client.build.watch\" \"npm run test.client.run.watch\" \"npm run test.client.serve\"",
     "test.client.watch": "npm run test.client.go",
-    "test.client.report": "startchrome.bat localhost:8777/index.html && npm run test.client.serve",
-
+    "test.client.report": "startchrome.bat http://localhost:8777/index.html && npm run test.client.serve",
     "test.server.build": "webpack --config webpack.server.test.js",
     "test.server.build.watch": "npm run test.server.build -- --watch",
     "test.server.run": "mocha test-report/testbundle.js --opts test/mocha.opts || exit 0",
     "test.server.run.watch": "mocha test-report/testbundle.js --opts test/mocha.opts --watch",
+    "test.server": "npm run test.server.build && npm run test.server.run",
     "test.server.serve": "autoreload-server -w \"**/**.html\" ./test-report 8778",
     "test.server.go": "concurrently --kill-others \"npm run test.server.build.watch\" \"npm run test.server.run.watch\" \"npm run test.server.serve\"",
     "test.server.watch": "npm run test.server.go",
-    "test.server.report": "startchrome.bat localhost:8778/index.html && npm run test.server.serve",
-
+    "test.server.report": "startchrome.bat http://localhost:8778/index.html && npm run test.server.serve",
     "test": "npm run test.client.build && npm run test.server.build && npm run test.client.run && npm run test.server.run"
   },
   "author": "PeerHenry",
@@ -72,7 +69,6 @@
     "sinon": "^2.0.0",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.4.2",
-    "webpack-node-externals": "^1.5.4",
-    "webpack-shell-plugin": "^0.5.0"
+    "webpack-node-externals": "^1.5.4"
   }
 }
