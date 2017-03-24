@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -78,7 +78,7 @@ module.exports = require("express");
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(__dirname) {
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -89,10 +89,12 @@ var _express = __webpack_require__(0);
 var router = (0, _express.Router)();
 
 router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Express' });
+  //res.render('index', { title: 'Express' }) // should replace with send?
+  res.sendFile(path.join(__dirname, 'client/public/views/index.html'));
 });
 
 exports.default = router;
+/* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ }),
 /* 2 */
@@ -115,18 +117,29 @@ var _TodosLogic = __webpack_require__(4);
 
 var _TodosLogic2 = _interopRequireDefault(_TodosLogic);
 
+var _debug = __webpack_require__(5);
+
+var _debug2 = _interopRequireDefault(_debug);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var todosData = new _TodosData2.default();
 var todosLogic = new _TodosLogic2.default(todosData);
 
 var router = (0, _express.Router)();
+var debugLog = (0, _debug2.default)('ph-todos:TodosController');
+function log(msg) {
+  debugLog(msg);
+  console.log('TodosController: ' + msg);
+}
 
 router.get('/', function (request, response) {
+  log('GET received');
   response.send({ todos: todosLogic.getTodos() });
 });
 
 router.post('/addtodo/', function (request, response) {
+  log('POST addtodo');
   var title = request.body.title;
   var newTodo = todosLogic.addTodo(title, false);
   var message = 'Todo ' + title + ' succesfully added.';
@@ -135,6 +148,7 @@ router.post('/addtodo/', function (request, response) {
 });
 
 router.post('/deletetodo/', function (request, response) {
+  log('POST deletetodo');
   var todoId = request.body.id;
   todosLogic.deleteTodo(todoId);
   var message = 'Todo ' + todoId + ' succesfully deleted.';
@@ -248,6 +262,12 @@ exports.default = TodosLogic;
 
 /***/ }),
 /* 5 */
+/***/ (function(module, exports) {
+
+module.exports = require("debug");
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

@@ -5,10 +5,11 @@
   "scripts": {
     "start": "nodemon ./bin/www",
     "dev": "node devServer.js",
+    "setdebug": "set DEBUG=*,-not_this",
     "build.client": "webpack",
     "build.client.watch": "webpack --watch",
     "build.server": "webpack --config webpack.server.js",
-    "build.server.watch": "npm run server.build -- --watch",
+    "build.server.watch": "npm run build.server -- --watch",
     "test.client.build": "webpack --config webpack.config.test.js",
     "test.client.build.watch": "npm run test.client.build -- --watch",
     "test.client.run": "mocha client/test-report/testbundle.js --opts client/test/mocha.opts || exit 0",

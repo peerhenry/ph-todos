@@ -1,6 +1,8 @@
 var path = require('path');
 var express = require('express');
 var favicon = require('serve-favicon');
+var bodyParser = require('body-parser');
+
 var webpack = require('webpack');
 var config = require('./webpack.config.dev');
 
@@ -14,6 +16,9 @@ app.use(require('webpack-dev-middleware')(compiler, {
 }));
 
 app.use(require('webpack-hot-middleware')(compiler));
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(favicon(path.join(__dirname, 'client/public/favicon.ico')));
 app.use(express.static(path.join(__dirname, 'client/public/js/libs'))); // use to serve js

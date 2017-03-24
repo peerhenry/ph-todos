@@ -11,17 +11,17 @@ const initialState = fromJS({
 })
 
 const logger = createLogger();
-/*const store = createStore(
+const store = createStore(
   TodosReducer, 
   initialState, 
   applyMiddleware(thunk, logger)
-)*/
+)
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // DEV
+/*const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // DEV
 const store = createStore(
   TodosReducer, 
   initialState, 
   composeEnhancers(applyMiddleware(thunk, logger))
-)
+)//*/
 
 export default store
