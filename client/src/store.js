@@ -10,14 +10,18 @@ const initialState = fromJS({
   visibilityFilter: 'SHOW_ALL'
 })
 
-console.log('now logging initial state keys')
-console.log(Object.keys(initialState))
-
 const logger = createLogger();
-const store = createStore(
+/*const store = createStore(
   TodosReducer, 
   initialState, 
   applyMiddleware(thunk, logger)
+)*/
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // DEV
+const store = createStore(
+  TodosReducer, 
+  initialState, 
+  composeEnhancers(applyMiddleware(thunk, logger))
 )
 
 export default store

@@ -48,3 +48,14 @@ The webpack-test.config.js is configured to use a plugin that runs mocha as soon
 With the browser already open, you can execute only steps 2 and 3 by running: 
 
 `npm test`
+
+## Hot reloading
+
+Run a dev server with `npm run dev`. The server actually makes use of the server bundle, so all XHR's work! It also works with hot reloading provided that either:
+- the webpack entry contains:
+```javascript
+if (module.hot) {
+  module.hot.accept();
+}
+```
+- use `react-transform` along with `react-transform-hmr`

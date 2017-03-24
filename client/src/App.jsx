@@ -13,7 +13,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <h1>Hello says React!</h1>
+        <h1>Hello says dog!</h1>
         <Provider store={store}>
           <TodosTableConnector/>
         </Provider>

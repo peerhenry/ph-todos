@@ -9,22 +9,24 @@ var debug = require('debug')('ph-todos:app.js');
 var stringify = require('node-stringify');
 
 var app = express();
-var clientPath = '../client';
+var publicPath = '../client/public';
 
 // view engine setup
-app.set('views', path.join(__dirname, clientPath, '/public/views'));
+app.set('views', path.join(__dirname, publicPath, '/views'));
 // app.set('view engine', 'jade'); // not using Jade atm.
 // app.set('view engine', 'pug');
-app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'html');
+//app.engine('html', require('ejs').renderFile);
+//app.set('view engine', 'html');
 
 // uncomment after placing your favicon in /public
-app.use(favicon(path.join(__dirname, clientPath, '/public', 'favicon.ico')));
+app.use(favicon(path.join(__dirname, publicPath, 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, clientPath, '/public')));
+app.use(express.static(path.join(__dirname, publicPath, 'js'))); // bundle will reside here
+app.use(express.static(path.join(__dirname, publicPath, 'js/libs')));
+app.use(express.static(path.join(__dirname, publicPath, 'css')));
 
 debug('--- Now going to load and couple the new serverbundle...');
 var bundle = require('./serverbundle');

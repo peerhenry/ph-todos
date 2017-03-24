@@ -1,25 +1,22 @@
 var webpack = require('webpack');
-var path = require('path');
+var path = require('path')
 
 module.exports = {
 
-  devtool: 'source-map',
-  context: __dirname,
-  entry: './client/src/main',
+  devtool: 'source-map', // idem to config
+  context: __dirname, // idem to config
+  entry: ['webpack-hot-middleware/client', './client/src/main'],
 
-  output: {
+  output: { // idem to config
     path: __dirname + '/client/public/js',
     filename: 'bundle.js'
   },
 
-  //cache: true,
-  //devtool: 'source-map',
-
-  resolve: {
+  resolve: { // idem to config
     extensions: ['.webpack.js', '.web.js', '.js', '.jsx'],
     modules: [
       './client/src',
-      path.resolve(__dirname, 'node_modules')
+      path.join(__dirname, 'node_modules')
     ],
     alias: { 
       todos: 'todos',
@@ -27,24 +24,24 @@ module.exports = {
     }
   },
 
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoEmitOnErrorsPlugin()
+  ],
+
   module: {
-    loaders:[
+    loaders:[ // idem to config
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        query: {
+        options: {
           presets: ['react', 'es2015', 'stage-0']
-        },
-        exclude: 'node_modules'
-      },
-      {
-        test: /\.html$|\.css$/,         // copy html and css 'as is'
-        loader: 'file?name=[name].[ext]'
+        }
       }
     ]
   },
 
-  externals: {
+  externals: { // idem to config
     'react': 'React',
     'react-dom': 'ReactDOM',
     'redux': 'Redux',
